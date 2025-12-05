@@ -170,19 +170,55 @@ return {
 
   {
     'ibhagwan/fzf-lua',
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-    },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = { 'skim' },
     config = function()
       local fzf = require 'fzf-lua'
 
+      -- Common excludes: only .git + some large/noisy dirs you probably never want
+      local common_excludes = {
+        '--exclude',
+        '.git', -- ONLY .git is fully excluded
+        '--exclude',
+        'node_modules',
+        '--exclude',
+        '.venv',
+        '--exclude',
+        '.cache',
+        '--exclude',
+        'Library',
+        '--exclude',
+        'Pictures',
+        '--exclude',
+        'Movies',
+        '--exclude',
+        'Music',
+        '--exclude',
+        'Desktop',
+      }
+
+      -- Convert to space-separated string for fd_opts
+      local fd_excludes = table.concat(common_excludes, ' ')
+
+      -- For ripgrep: use glob negation, but only exclude .git directory contents
+      local rg_globs = {
+        '--hidden',
+        '--glob=!.git/*', -- exclude everything inside .git
+        '--glob=!node_modules/*',
+        '--glob=!.venv/*',
+        '--glob=!.cache/*',
+        '--glob=!Library/*',
+        '--glob=!Pictures/*',
+        '--glob=!Movies/*',
+        '--glob=!Music/*',
+        '--glob=!Desktop/*',
+      }
+      local rg_opts = table.concat(rg_globs, ' ')
+
       fzf.setup {
-        {
-          'fzf-native',
-          winopts = {
-            preview = { default = 'bat' },
-          },
+        'fzf-native',
+        winopts = {
+          preview = { default = 'bat' },
         },
         keymap = {
           fzf = {
@@ -193,29 +229,6 @@ return {
             ['ctrl-q'] = 'abort',
           },
         },
-        files = {
-          fd_opts = '--type f --hidden --exclude node_modules --exclude .git --exclude .venv',
-          previewer = 'bat',
-        },
-        buffers = {
-          sort_lastused = true,
-          previewer = 'bat',
-        },
-        grep = {
-          cmd = 'rg --line-number --column --no-heading --color=always --smart-case',
-          rg_opts = '--hidden --glob "!node_modules/*" --glob "!.git/*" --glob "!.venv/*"',
-          previewer = 'bat',
-        },
-        live_grep = {
-          cmd = 'rg --line-number --column --no-heading --color=always --smart-case',
-          rg_opts = '--hidden --glob "!node_modules/*" --glob "!.git/*" --glob "!.venv/*"',
-          previewer = 'bat',
-        },
-        git = {
-          files = {
-            previewer = 'bat',
-          },
-        },
         fzf_opts = {
           ['--tiebreak'] = 'index',
         },
@@ -224,54 +237,67 @@ return {
           file_icons = true,
           color_icons = true,
         },
+
+        -- File finder: include hidden files/dirs, exclude only .git + noisy dirs
+        files = {
+          fd_opts = '--type f --hidden --strip-cwd-prefix ' .. fd_excludes,
+          previewer = 'bat',
+        },
+
+        -- Grep & live_grep: search hidden files, but never enter .git
+        grep = {
+          rg_opts = '--column --line-number --no-heading --color=always --smart-case ' .. rg_opts,
+          previewer = 'bat',
+        },
+        live_grep = {
+          rg_opts = '--column --line-number --no-heading --color=always --smart-case ' .. rg_opts,
+          previewer = 'bat',
+        },
+
+        buffers = {
+          sort_lastused = true,
+          previewer = 'bat',
+        },
+
+        git = {
+          files = { previewer = 'bat' },
+        },
       }
+
       fzf.register_ui_select()
 
       local keymap = vim.keymap.set
 
+      -- Resume last search
       keymap('n', '<leader>fr', fzf.resume, { desc = '[F]ind [R]esume' })
 
-      -- Find Text
+      -- Grep / Live grep
       keymap('n', '<leader>ff', function()
         fzf.live_grep { cwd = require('oil').get_current_dir() }
       end, { desc = '[F]ind Text in current [D]irectory' })
-      keymap('n', '<leader>fF', fzf.live_grep, { desc = '[F]ind text' })
+
+      keymap('n', '<leader>fF', fzf.live_grep, { desc = '[F]ind text (project-wide)' })
+
       keymap('v', '<leader>ff', function()
         require('fzf-lua').grep_visual()
       end, { desc = '[F]ind text from visual selection' })
 
+      -- LSP symbols
       keymap('n', '<leader>fs', function()
         fzf.lsp_document_symbols {
           symbol_types = { 'Class', 'Function', 'Method', 'Constructor', 'Interface', 'Module', 'Property' },
         }
-      end, { desc = '[Find] LSP [S]ymbols' })
+      end, { desc = '[F]ind LSP [S]ymbols' })
 
-      -- Find files
+      -- Files
       keymap('n', '<leader>fg', fzf.git_files, { desc = '[F]ind [G]it Files' })
-      keymap('n', '<leader>fD', fzf.files, { desc = '[F]ind [D]irectory Files' })
-      keymap('v', '<leader>fD', fzf.files, { desc = '[F]ind [D]irectory Files' })
+      keymap('n', '<leader>fD', fzf.files, { desc = '[F]ind All Files (incl. hidden)' })
       keymap('n', '<leader>fd', function()
         fzf.files { cwd = require('oil').get_current_dir() }
-      end, { desc = '[F]ind in current [D]irectory' })
-      keymap('n', '<leader>fR', fzf.oldfiles, { desc = '[F]ind [Recent] Files' })
+      end, { desc = '[F]ind files in current [D]irectory' })
+      keymap('n', '<leader>fR', fzf.oldfiles, { desc = '[F]ind [R]ecent Files' })
 
-      -- keymap('n', '<leader>fb', fzf.buffers, { desc = '[S]earch existing [B]uffers' })
-      -- keymap('n', '<leader>fm', fzf.marks, { desc = '[S]earch [M]arks' })
-      -- keymap('n', '<leader>fq', fzf.quickfix, { desc = 'Show quick fix list' })
-      -- keymap('n', '<leader>gc', fzf.git_commits, { desc = 'Search [G]it [C]ommits' })
-      -- keymap('n', '<leader>gcf', fzf.git_bcommits, { desc = 'Search [G]it [C]ommits for current [F]ile' })
-      -- keymap('n', '<leader>tgb', fzf.git_branches, { desc = 'Search [G]it [B]ranches' })
-      -- keymap('n', '<leader>gs', fzf.git_status, { desc = 'Search [G]it [S]tatus (diff view)' })
-      -- keymap('n', '<leader>sh', fzf.help_tags, { desc = '[S]earch [H]elp' })
-      -- keymap('n', '<leader>scw', fzf.grep_cword, { desc = '[S]earch current [W]ord' })
-      -- keymap('n', '<leader>fd', fzf.diagnostics_document, { desc = '[S]earch [D]iagnostics' })
-      -- keymap('n', '<leader>ft', function()
-      -- 	fzf.grep { cmd = 'rg --column --line-number', search = 'TODO', prompt = 'Todos> ' }
-      -- end, { desc = 'Find todos' })
-      -- keymap('n', '<leader><leader>', fzf.buffers, { desc = 'Find existing buffers' })
-      -- keymap('n', '<leader>s/', function()
-      -- 	fzf.live_grep { buffers_only = true, prompt = 'Live Grep in Open Files> ' }
-      -- end, { desc = '[S]earch [/] in Open Files' })
+      -- Fuzzy search current buffer
       keymap('n', '/', function()
         fzf.blines { previewer = false }
       end, { desc = 'Fuzzily search in current buffer' })

@@ -1,13 +1,13 @@
 -- init.lua
-vim.opt.shell = '/bin/nu'
+-- vim.opt.shell = '/bin/nu'
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.o.number = true
+vim.g.python3_host_prog = '/Users/vustimenko/Code/installs/venvs/.venv/bin/python.3.14'
 
 vim.o.relativenumber = true
 vim.opt.termguicolors = true
 
-vim.g.lazyvim_python_lsp = 'basedpyright'
 vim.opt.undodir = os.getenv 'HOME' .. '/.cache/nvim/undodir'
 vim.opt.foldlevelstart = 99
 
