@@ -40,7 +40,7 @@ return {
 	default_cursor_style = "BlinkingBar",
 
 	-- X11
-	enable_wayland = true,
+	-- enable_wayland = true,
 
 	-- Keybinds
 	disable_default_key_bindings = true,
@@ -135,16 +135,16 @@ return {
 		-- 	mods = "CTRL",
 		-- 	action = "ActivateCopyMode",
 		-- },
-		{
-			key = "v",
-			mods = "CTRL",
-			action = wezterm.action({ PasteFrom = "Clipboard" }),
-		},
-		{
-			key = "c",
-			mods = "CTRL",
-			action = wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }),
-		},
+		-- {
+		-- 	key = "v",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action({ PasteFrom = "Clipboard" }),
+		-- },
+		-- {
+		-- 	key = "c",
+		-- 	mods = "CTRL",
+		-- 	action = wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }),
+		-- },
 		{ key = "PageUp", mods = "SHIFT", action = act.ScrollByPage(-1) },
 		{ key = "PageDown", mods = "SHIFT", action = act.ScrollByPage(1) },
 	},
@@ -158,7 +158,7 @@ return {
 		top = 25,
 		bottom = 25,
 	},
-	enable_kitty_graphics = true,
+	-- enable_kitty_graphics = true,
 
 	-- Tab Bar
 	-- enable_tab_bar = true,
