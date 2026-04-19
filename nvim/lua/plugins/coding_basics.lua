@@ -1,14 +1,5 @@
 return {
   {
-    'numToStr/Comment.nvim',
-    opts = {
-      opleader = {
-        line = '<leader>tcl',
-        block = '<leader>tcb',
-      },
-    },
-  },
-  {
     'RRethy/vim-illuminate',
     opts = {
       providers = { 'lsp', 'treesitter', 'regex' }, -- Prioritize LSP/Treesitter for accuracy

@@ -1,23 +1,5 @@
 return {
   {
-    'nvimdev/lspsaga.nvim',
-    event = 'LspAttach',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-tree/nvim-web-devicons',
-    },
-    opts = {
-      ui = {
-        border = 'rounded',
-      },
-      lightbulb = { enable = true },
-      symbol_in_winbar = { enable = true },
-    },
-    config = function(_, opts)
-      require('lspsaga').setup(opts)
-    end,
-  },
-  {
     'neovim/nvim-lspconfig',
     event = 'BufReadPre',
     dependencies = {
@@ -29,7 +11,6 @@ return {
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       { 'j-hui/fidget.nvim', opts = {} },
-      { 'https://git.sr.ht/~whynothugo/lsp_lines.nvim' },
       'stevearc/conform.nvim',
       'b0o/SchemaStore.nvim',
     },
@@ -149,37 +130,21 @@ return {
 
           vim.opt_local.omnifunc = 'v:lua.vim.lsp.omnifunc'
           local bufopts = { buffer = 0 }
-          vim.keymap.set('n', 'gd', '<cmd>Lspsaga goto_definition<CR>', vim.tbl_extend('force', bufopts, { desc = 'Goto Definition' }))
-          vim.keymap.set('n', 'gD', '<cmd>Lspsaga goto_declaration<CR>', vim.tbl_extend('force', bufopts, { desc = 'Goto Declaration' }))
-          vim.keymap.set('n', 'gt', '<cmd>Lspsaga goto_type_definition<CR>', vim.tbl_extend('force', bufopts, { desc = 'Goto Type Definition' }))
-          vim.keymap.set('n', 'gi', '<cmd>Lspsaga finder imp<CR>', vim.tbl_extend('force', bufopts, { desc = 'Goto Implementation' }))
-          vim.keymap.set('n', 'gr', '<cmd>Lspsaga finder ref<CR>', vim.tbl_extend('force', bufopts, { desc = 'Goto References' }))
-          vim.keymap.set({ 'n', 'v' }, '<leader>ca', '<cmd>Lspsaga code_action<CR>', vim.tbl_extend('force', bufopts, { desc = 'Code Action' }))
-
-          vim.keymap.set('n', '<leader>rnn', '<cmd>Lspsaga rename<CR>', vim.tbl_extend('force', bufopts, { desc = 'Rename' }))
-          vim.keymap.set('n', 'gp', '<cmd>Lspsaga peek_definition<CR>', vim.tbl_extend('force', bufopts, { desc = 'Peek Definition' }))
-
-          vim.keymap.set('n', '<leader>[d', '<cmd>Lspsaga diagnostic_jump_prev<CR>', bufopts)
-          vim.keymap.set('n', '<leader>]d', '<cmd>Lspsaga diagnostic_jump_next<CR>', bufopts)
-
-          vim.keymap.set('i', '<C-k>', '<cmd>Lspsaga signature_help<CR>', { buffer = bufnr, desc = 'Signature Help' })
-          vim.keymap.set('n', 'K', '<cmd>Lspsaga hover_doc<CR>', vim.tbl_extend('force', bufopts, { desc = 'Hover Documentation' }))
-          --
-          -- local builtin = require 'telescope.builtin'
-          --
-          -- vim.opt_local.omnifunc = 'v:lua.vim.lsp.omnifunc'
-          -- vim.keymap.set('n', 'gd', builtin.lsp_definitions, { buffer = 0 })
-          -- vim.keymap.set('n', 'gr', builtin.lsp_references, { buffer = 0 })
-          -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = 0 })
-          -- vim.keymap.set('n', 'gT', vim.lsp.buf.type_definition, { buffer = 0 })
-          -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = 0 })
-          --
-          -- vim.keymap.set('n', '<space>cr', vim.lsp.buf.rename, { buffer = 0 })
-          -- vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, { buffer = 0 })
-          -- vim.keymap.set('n', '<space>wd', builtin.lsp_document_symbols, { buffer = 0 })
-          -- vim.keymap.set('n', '<space>ww', function()
-          --   builtin.diagnostics { root_dir = true }
-          -- end, { buffer = 0 })
+          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, vim.tbl_extend('force', bufopts, { desc = 'Goto Definition' }))
+          vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, vim.tbl_extend('force', bufopts, { desc = 'Goto Declaration' }))
+          vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, vim.tbl_extend('force', bufopts, { desc = 'Goto Type Definition' }))
+          vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, vim.tbl_extend('force', bufopts, { desc = 'Goto Implementation' }))
+          vim.keymap.set('n', 'gr', vim.lsp.buf.references, vim.tbl_extend('force', bufopts, { desc = 'Goto References' }))
+          vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, vim.tbl_extend('force', bufopts, { desc = 'Code Action' }))
+          vim.keymap.set('n', '<leader>rnn', vim.lsp.buf.rename, vim.tbl_extend('force', bufopts, { desc = 'Rename' }))
+          vim.keymap.set('n', 'gp', function()
+            vim.cmd 'split'
+            vim.lsp.buf.definition()
+          end, vim.tbl_extend('force', bufopts, { desc = 'Peek Definition (split)' }))
+          vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1, float = true } end, vim.tbl_extend('force', bufopts, { desc = 'Prev Diagnostic' }))
+          vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = true } end, vim.tbl_extend('force', bufopts, { desc = 'Next Diagnostic' }))
+          vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = 'Signature Help' })
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, vim.tbl_extend('force', bufopts, { desc = 'Hover Documentation' }))
 
           local filetype = vim.bo[bufnr].filetype
           if disable_semantic_tokens[filetype] then
@@ -200,7 +165,6 @@ return {
         end,
       })
 
-      require('lsp_lines').setup()
       vim.diagnostic.config { virtual_text = true, virtual_lines = false }
 
       vim.keymap.set('', '<leader>tl', function()
