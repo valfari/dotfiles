@@ -29,13 +29,6 @@ return {
   { 'matze/vim-move' },
   { 'mg979/vim-visual-multi' },
   {
-    'mbbill/undotree',
-
-    config = function()
-      vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
-    end,
-  },
-  {
     'kylechui/nvim-surround',
     version = '^3.0.0',
     event = 'VeryLazy',

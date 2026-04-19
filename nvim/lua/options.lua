@@ -55,6 +55,15 @@ vim.o.cursorline = true
 vim.o.scrolloff = 10
 vim.opt.diffopt:append 'algorithm:patience'
 vim.opt.diffopt:append 'indent-heuristic'
+vim.opt.diffopt:append 'inline:char'
+
+vim.o.winborder = 'rounded'
+
+vim.o.foldmethod = 'expr'
+vim.o.foldexpr = 'v:lua.vim.lsp.foldexpr()'
+vim.o.foldcolumn = '1'
+vim.o.foldlevel = 99
+vim.o.foldenable = true
 
 vim.o.confirm = true
 vim.api.nvim_create_autocmd('TextYankPost', {

@@ -16,10 +16,7 @@ return {
     },
 
     config = function()
-      local capabilities = nil
-      if pcall(require, 'cmp_nvim_lsp') then
-        capabilities = require('cmp_nvim_lsp').default_capabilities()
-      end
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       local servers = {
         bashls = true,
@@ -108,6 +105,7 @@ return {
           -- Remove manual_install flag as it's not an LSP config field
           local lsp_config = vim.tbl_deep_extend('force', {}, config)
           lsp_config.manual_install = nil
+          lsp_config.server_capabilities = nil
           vim.lsp.config(name, lsp_config)
         end
 
@@ -165,14 +163,14 @@ return {
         end,
       })
 
-      vim.diagnostic.config { virtual_text = true, virtual_lines = false }
+      vim.diagnostic.config { virtual_text = { current_line = true }, virtual_lines = false }
 
       vim.keymap.set('', '<leader>tl', function()
         local config = vim.diagnostic.config() or {}
         if config.virtual_text then
           vim.diagnostic.config { virtual_text = false, virtual_lines = true }
         else
-          vim.diagnostic.config { virtual_text = true, virtual_lines = false }
+          vim.diagnostic.config { virtual_text = { current_line = true }, virtual_lines = false }
         end
       end, { desc = 'Toggle lsp_lines' })
     end,
@@ -188,9 +186,9 @@ return {
       },
       format_on_save = {
         timeout_ms = 500,
-        lsp_fallback = true,
+        lsp_format = 'fallback',
       },
-      default_format_opts = { lsp_fallback = true },
+      default_format_opts = { lsp_format = 'fallback' },
     },
   },
 }
