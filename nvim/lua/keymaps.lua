@@ -13,6 +13,23 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set({ 'n', 'x' }, '<leader>tcl', 'gc', { remap = true, desc = '[T]oggle [C]omment [L]ine' })
 vim.keymap.set({ 'n', 'x' }, '<leader>tcb', 'gb', { remap = true, desc = '[T]oggle [C]omment [B]lock' })
 
+-- DIFF VS CLIPBOARD
+vim.keymap.set('n', '<leader>dc', function()
+  local clip = vim.split(vim.fn.getreg '+', '\n')
+  local ft = vim.bo.filetype
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.bo[buf].buftype = 'nofile'
+  vim.bo[buf].bufhidden = 'wipe'
+  vim.bo[buf].filetype = ft
+  vim.api.nvim_buf_set_name(buf, '[Clipboard]')
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, clip)
+  vim.cmd 'leftabove vsplit'
+  vim.api.nvim_win_set_buf(0, buf)
+  vim.cmd 'diffthis'
+  vim.cmd 'wincmd p'
+  vim.cmd 'diffthis'
+end, { desc = 'Diff vs clipboard' })
+
 -- EXECUTE COMMANDS
 vim.keymap.set('v', '<leader>el', ':lua<CR>', { desc = '[E]xecute [L]ua' })
 --
