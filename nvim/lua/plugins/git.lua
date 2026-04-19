@@ -8,7 +8,16 @@ return {
         delete = { text = '_' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
+        untracked = { text = '┆' },
       },
+      signs_staged = {
+        add = { text = '▎' },
+        change = { text = '▎' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+      signs_staged_enable = true,
       on_attach = function(bufnr)
         local gs = require('gitsigns')
         local map = function(mode, lhs, rhs, desc)
@@ -29,9 +38,21 @@ return {
         map('n', '<leader>gu', gs.undo_stage_hunk, 'Undo stage hunk')
 
         -- Preview & blame
-        map('n', '<leader>gp', gs.preview_hunk, 'Preview hunk')
+        map('n', '<leader>gp', gs.preview_hunk_inline, 'Preview hunk inline')
+        map('n', '<leader>gP', gs.preview_hunk, 'Preview hunk (float)')
         map('n', '<leader>gB', function() gs.blame_line { full = true } end, 'Blame line')
         map('n', '<leader>tb', gs.toggle_current_line_blame, 'Toggle inline blame')
+        map('n', '<leader>tw', gs.toggle_word_diff, 'Toggle word diff')
+
+        -- Diff this buffer
+        map('n', '<leader>gd', gs.diffthis, 'Diff buffer vs index')
+        map('n', '<leader>gD', function() gs.diffthis('~') end, 'Diff buffer vs last commit')
+
+        -- Quickfix
+        map('n', '<leader>gq', gs.setqflist, 'Hunks to quickfix')
+
+        -- Text object
+        map({ 'o', 'x' }, 'ih', gs.select_hunk, 'Select hunk')
       end,
     },
   },
@@ -42,16 +63,21 @@ return {
       diff = {
         layout = 'side-by-side',
         disable_inlay_hints = true,
+        compute_moves = false,
       },
       explorer = {
         position = 'left',
         width = 40,
         view_mode = 'list',
+        flatten_dirs = true,
+        indent_markers = true,
+        visible_groups = { staged = true, unstaged = true, conflicts = true },
       },
     },
     keys = {
       { '<leader>dd', '<cmd>CodeDiff<cr>', desc = 'Diff explorer' },
       { '<leader>dh', '<cmd>CodeDiff HEAD<cr>', desc = 'Diff vs HEAD' },
+      { '<leader>dH', '<cmd>CodeDiff history<cr>', desc = 'Diff commit history' },
     },
   },
 }
