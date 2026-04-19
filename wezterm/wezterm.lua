@@ -5,6 +5,46 @@ local act = wezterm.action
 
 wezterm.add_to_config_reload_watch_list(home .. "/.cache/wal/wezterm-wal.toml")
 
+-- Tab title: process icon + cwd basename
+local process_icons = {
+	fish = "󰈺",
+	zsh = "",
+	bash = "",
+	nvim = "",
+	vim = "",
+	git = "",
+	ssh = "󰣀",
+	htop = "",
+	btm = "",
+	lazygit = "",
+}
+
+wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
+	local pane = tab.active_pane
+	local proc = pane.foreground_process_name:match("([^/]+)$") or ""
+	local icon = process_icons[proc] or "󰆍"
+	local cwd = pane.current_working_dir
+	local dir = cwd and cwd.file_path:match("([^/]+)$") or "~"
+
+	-- Tokyo Night Storm palette
+	local active_bg = "#3d59a1"
+	local active_fg = "#c0caf5"
+	local inactive_bg = "#1f2335"
+	local inactive_fg = "#565f89"
+	local hover_bg = "#2d3f76"
+
+	local bg = tab.is_active and active_bg or (hover and hover_bg or inactive_bg)
+	local fg = tab.is_active and active_fg or inactive_fg
+
+	local title = string.format(" %s  %s ", icon, wezterm.truncate_right(dir, max_width - 6))
+
+	return {
+		{ Background = { Color = bg } },
+		{ Foreground = { Color = fg } },
+		{ Text = title },
+	}
+end)
+
 return {
 	adjust_window_size_when_changing_font_size = false,
 	font = wezterm.font_with_fallback(fonts.getFonts("fira")),
@@ -146,10 +186,18 @@ return {
 	-- enable_kitty_graphics = true,
 
 	-- Tab Bar
-	-- enable_tab_bar = true,
-	-- hide_tab_bar_if_only_one_tab = true,
-	-- show_tab_index_in_tab_bar = false,
-	-- tab_bar_at_bottom = true,
+	enable_tab_bar = true,
+	use_fancy_tab_bar = false,
+	hide_tab_bar_if_only_one_tab = true,
+	tab_bar_at_bottom = true,
+	tab_max_width = 32,
+	colors = {
+		tab_bar = {
+			background = "#1f2335",
+			new_tab = { bg_color = "#1f2335", fg_color = "#565f89" },
+			new_tab_hover = { bg_color = "#2d3f76", fg_color = "#c0caf5" },
+		},
+	},
 	-- General
 	window_decorations = "TITLE | RESIZE",
 	automatically_reload_config = true,
