@@ -1,6 +1,7 @@
 return {
   {
     'romgrk/barbar.nvim',
+    event = 'BufAdd',
     dependencies = {
       'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
       'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
@@ -170,6 +171,7 @@ return {
 
   {
     'ibhagwan/fzf-lua',
+    event = 'VeryLazy',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = { 'skim' },
     config = function()

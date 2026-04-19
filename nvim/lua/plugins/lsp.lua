@@ -19,6 +19,7 @@ return {
   },
   {
     'neovim/nvim-lspconfig',
+    event = 'BufReadPre',
     dependencies = {
       {
         'folke/lazydev.nvim',

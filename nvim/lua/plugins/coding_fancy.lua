@@ -23,6 +23,7 @@ return {
   },
   {
     'aznhe21/actions-preview.nvim',
+    event = 'LspAttach',
     dependencies = { 'MunifTanjim/nui.nvim' },
     config = function()
       local ap = require 'actions-preview'

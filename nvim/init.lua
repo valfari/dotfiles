@@ -54,6 +54,5 @@ vim.cmd.colorscheme 'melange'
 require 'keymaps'
 
 require('lualine').setup()
-require('actions-preview').setup()
 require 'spell'
 require 'scooter'
