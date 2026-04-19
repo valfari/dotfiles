@@ -1,6 +1,7 @@
 *
 !*/
 !.gitignore
+!Makefile
 !nvim/**
 !wezterm/**
 !fish/**
