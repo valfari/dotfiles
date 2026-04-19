@@ -1,18 +1,34 @@
 return {
   {
-    'kdheepak/lazygit.nvim',
-    cmd = { 'LazyGit', 'LazyGitConfig', 'LazyGitCurrentFile', 'LazyGitFilter', 'LazyGitFilterCurrentFile' },
-    -- optional for floating window border decoration
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = {
-      floating_window_winblend = 0, -- 0-100 transparency
-      floating_window_scaling_factor = 0.9, -- Size as % of editor
-      floating_window_border_chars = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }, -- Pretty borders
-      use_neovim_remote = true, -- Edit commits in Neovim (requires neovim-remote installed via pip)
-    },
+    'tanvirtin/vgit.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('vgit').setup {
+        settings = {
+          live_gutter = {
+            enabled = false, -- gitsigns handles gutter signs
+          },
+        },
+      }
+    end,
     keys = {
-      { '<leader>gg', '<cmd>LazyGit<cr>', desc = 'LazyGit (root dir)' },
-      { '<leader>gG', '<cmd>LazyGitCurrentFile<cr>', desc = 'LazyGit (current file)' },
+      -- Hunk navigation
+      { ']g', function() require('vgit').hunk_down() end, desc = 'Next git hunk' },
+      { '[g', function() require('vgit').hunk_up() end, desc = 'Prev git hunk' },
+      -- Buffer operations
+      { '<leader>gp', function() require('vgit').buffer_hunk_preview() end, desc = 'Preview hunk' },
+      { '<leader>gs', function() require('vgit').buffer_hunk_stage() end, desc = 'Stage hunk' },
+      { '<leader>gr', function() require('vgit').buffer_hunk_reset() end, desc = 'Reset hunk' },
+      { '<leader>gB', function() require('vgit').buffer_blame_preview() end, desc = 'Blame line' },
+      { '<leader>gH', function() require('vgit').buffer_history_preview() end, desc = 'File history' },
+      -- Toggles
+      { '<leader>tb', function() require('vgit').toggle_live_blame() end, desc = 'Toggle live blame' },
+      -- Project-wide (lazygit replacement)
+      { '<leader>gg', function() require('vgit').project_diff_preview() end, desc = 'Project diff' },
+      { '<leader>gl', function() require('vgit').project_logs_preview() end, desc = 'Project logs' },
+      { '<leader>gC', function() require('vgit').project_commit_preview() end, desc = 'Commit' },
+      { '<leader>gS', function() require('vgit').project_stash_preview() end, desc = 'Stash' },
     },
   },
   {

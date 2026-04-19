@@ -12,9 +12,6 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- EXECUTE COMMANDS
 vim.keymap.set('v', '<leader>el', ':lua<CR>', { desc = '[E]xecute [L]ua' })
 --
--- LAUNCH COMMANDS
-vim.keymap.set('n', '<leader>lg', '<cmd>LazyGit<CR>', { desc = '[L]aunch [G]it global' })
-
 -- TOGGLE COMMANDS
 
 local themes = { 'rose-pine', 'melange', 'everforest' }
