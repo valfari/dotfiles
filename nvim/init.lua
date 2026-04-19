@@ -55,4 +55,3 @@ require 'keymaps'
 
 require('lualine').setup()
 require 'spell'
-require 'scooter'

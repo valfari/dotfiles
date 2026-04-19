@@ -1,17 +1,30 @@
 return {
-  -- {
-  --   'MagicDuck/grug-far.nvim',
-  --   -- Note (lazy loading): grug-far.lua defers all it's requires so it's lazy by default
-  --   -- additional lazy config to defer loading is not really needed...
-  --   config = function()
-  --     -- optional setup call to override plugin options
-  --     -- alternatively you can set options with vim.g.grug_far = { ... }
-  --     require('grug-far').setup {
-  --       -- options, see Configuration section below
-  --       -- there are no required options atm
-  --     }
-  --   end,
-  -- },
+  {
+    'MagicDuck/grug-far.nvim',
+    opts = {},
+    keys = {
+      {
+        '<leader>lr',
+        function() require('grug-far').open({ transient = true }) end,
+        mode = { 'n', 'v' },
+        desc = '[L]aunch find and [R]eplace',
+      },
+      {
+        '<leader>lw',
+        function()
+          require('grug-far').open({ prefills = { search = vim.fn.expand '<cword>' } })
+        end,
+        desc = '[L]aunch replace [W]ord under cursor',
+      },
+      {
+        '<leader>lf',
+        function()
+          require('grug-far').open({ prefills = { paths = vim.fn.expand '%' } })
+        end,
+        desc = '[L]aunch replace in current [F]ile',
+      },
+    },
+  },
   { 'NMAC427/guess-indent.nvim' },
   { 'matze/vim-move' },
   { 'mg979/vim-visual-multi' },
