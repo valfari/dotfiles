@@ -2,23 +2,6 @@ require 'options'
 
 require('lazy').setup({
   {
-    'rose-pine/neovim',
-    name = 'rose-pine',
-    priority = 1000,
-    opts = {},
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('rose-pine').setup {
-        -- variant = 'moon',
-        -- dark_variant = 'moon',
-      }
-    end,
-  },
-  {
-    'savq/melange-nvim',
-    priority = 1000,
-  },
-  {
     'sainnhe/everforest',
     priority = 1000,
     config = function()
@@ -26,6 +9,17 @@ require('lazy').setup({
       vim.g.everforest_enable_italic = 1
       vim.g.everforest_disable_italic_comments = 1
     end,
+  },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    opts = { flavour = 'frappe' },
+  },
+  {
+    'ellisonleao/gruvbox.nvim',
+    priority = 1000,
+    opts = {},
   },
   { import = 'plugins' },
 }, {
@@ -49,7 +43,8 @@ require('lazy').setup({
 })
 
 -- Apply initial theme
-vim.cmd.colorscheme 'melange'
+vim.o.background = 'dark'
+vim.cmd.colorscheme 'gruvbox'
 
 require 'keymaps'
 

@@ -35,11 +35,17 @@ vim.keymap.set('v', '<leader>el', ':lua<CR>', { desc = '[E]xecute [L]ua' })
 --
 -- TOGGLE COMMANDS
 
-local themes = { 'rose-pine', 'melange', 'everforest' }
+local themes = {
+  { scheme = 'gruvbox', bg = 'dark', label = 'gruvbox dark' },
+  { scheme = 'gruvbox', bg = 'light', label = 'gruvbox light' },
+  { scheme = 'everforest', bg = 'dark', label = 'everforest' },
+  { scheme = 'catppuccin-frappe', bg = 'dark', label = 'catppuccin-frappe' },
+}
 local current_theme_index = 1
 vim.keymap.set('n', '<leader>ty', function()
   current_theme_index = current_theme_index % #themes + 1
-  local new_theme = themes[current_theme_index]
-  vim.cmd.colorscheme(new_theme)
-  print('Switched to ' .. new_theme)
-end, { desc = '[T]oggle [T]heme (rose-pine -> melange -> aura-dark -> everforest -> ...)' })
+  local t = themes[current_theme_index]
+  vim.o.background = t.bg
+  vim.cmd.colorscheme(t.scheme)
+  print('Switched to ' .. t.label)
+end, { desc = 'Toggle theme' })
