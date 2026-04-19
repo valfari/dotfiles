@@ -68,7 +68,7 @@ return {
       explorer = {
         position = 'left',
         width = 40,
-        view_mode = 'list',
+        view_mode = 'tree',
         flatten_dirs = true,
         indent_markers = true,
         visible_groups = { staged = true, unstaged = true, conflicts = true },
