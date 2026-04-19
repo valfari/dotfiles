@@ -1,34 +1,24 @@
 return {
   {
-    'tanvirtin/vgit.nvim',
-    event = 'VimEnter',
-    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons' },
-    config = function()
-      require('vgit').setup {
-        settings = {
-          live_gutter = {
-            enabled = false, -- gitsigns handles gutter signs
-          },
-        },
-      }
-    end,
+    'SuperBo/fugit2.nvim',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'nvim-lua/plenary.nvim',
+      {
+        'chrisgrieser/nvim-tinygit',
+        dependencies = { 'stevearc/dressing.nvim' },
+      },
+    },
+    cmd = { 'Fugit2', 'Fugit2Diff', 'Fugit2Graph', 'Fugit2Rebase' },
+    opts = {
+      width = 100,
+      external_diffview = true, -- hand diffs off to diffview.nvim
+    },
     keys = {
-      -- Hunk navigation
-      { ']g', function() require('vgit').hunk_down() end, desc = 'Next git hunk' },
-      { '[g', function() require('vgit').hunk_up() end, desc = 'Prev git hunk' },
-      -- Buffer operations
-      { '<leader>gp', function() require('vgit').buffer_hunk_preview() end, desc = 'Preview hunk' },
-      { '<leader>gs', function() require('vgit').buffer_hunk_stage() end, desc = 'Stage hunk' },
-      { '<leader>gr', function() require('vgit').buffer_hunk_reset() end, desc = 'Reset hunk' },
-      { '<leader>gB', function() require('vgit').buffer_blame_preview() end, desc = 'Blame line' },
-      { '<leader>gH', function() require('vgit').buffer_history_preview() end, desc = 'File history' },
-      -- Toggles
-      { '<leader>tb', function() require('vgit').toggle_live_blame() end, desc = 'Toggle live blame' },
-      -- Project-wide (lazygit replacement)
-      { '<leader>gg', function() require('vgit').project_diff_preview() end, desc = 'Project diff' },
-      { '<leader>gl', function() require('vgit').project_logs_preview() end, desc = 'Project logs' },
-      { '<leader>gC', function() require('vgit').project_commit_preview() end, desc = 'Commit' },
-      { '<leader>gS', function() require('vgit').project_stash_preview() end, desc = 'Stash' },
+      { '<leader>gg', '<cmd>Fugit2<cr>', desc = 'Fugit2 status' },
+      { '<leader>gG', '<cmd>Fugit2Graph<cr>', desc = 'Fugit2 graph' },
+      { '<leader>gR', '<cmd>Fugit2Rebase<cr>', desc = 'Fugit2 rebase' },
     },
   },
   {
