@@ -5,20 +5,6 @@ return {
     -- event = 'VeryLazy',
   },
   {
-    'm4xshen/hardtime.nvim',
-    lazy = false,
-    dependencies = { 'MunifTanjim/nui.nvim' },
-    opts = {
-      disable_mouse = false,
-      disabled_keys = {
-        ['<Up>'] = { '', 'n' },
-        ['<Down>'] = { '', 'n' },
-        ['<Left>'] = { '', 'n' },
-        ['<Right>'] = { '', 'n' },
-      },
-    },
-  },
-  {
     'folke/which-key.nvim',
     event = 'VeryLazy',
     keys = {

@@ -38,10 +38,6 @@ return {
     config = true,
   },
   {
-    'f-person/git-blame.nvim',
-    opts = { enabled = false, date_format = '%r' },
-  },
-  {
     'ruifm/gitlinker.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()

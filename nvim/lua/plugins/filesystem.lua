@@ -12,28 +12,6 @@ return {
     },
   },
   {
-    'A7Lavinraj/fyler.nvim',
-    enabled = false,
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    branch = 'stable',
-    opts = {
-      icon_provider = 'nvim_web_devicons',
-      close_on_select = false,
-      mappings = {
-        ['q'] = 'CloseView',
-        ['<CR>'] = 'Select',
-        ['<C-t>'] = 'SelectTab',
-        ['|'] = 'SelectVSplit',
-        ['-'] = 'SelectSplit',
-        ['^'] = 'GotoParent',
-        ['='] = 'GotoCwd',
-        ['.'] = 'GotoNode',
-        ['#'] = 'CollapseAll',
-        ['<BS>'] = 'CollapseNode',
-      },
-    },
-  },
-  {
     'stevearc/oil.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
@@ -79,9 +57,5 @@ return {
         changedelete = { text = '~' },
       },
     },
-  },
-  {
-    'benomahony/oil-git.nvim',
-    dependencies = { 'stevearc/oil.nvim' },
   },
 }

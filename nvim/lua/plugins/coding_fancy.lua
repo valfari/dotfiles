@@ -1,27 +1,5 @@
 return {
   {
-    'smjonas/inc-rename.nvim',
-    opts = {
-      hl_group = 'Substitute',
-      preview_empty_name = true,
-      show_message = true,
-      input_buffer_type = nil,
-      post_hook = function()
-        require('lspsaga').init_lsp_saga()
-      end,
-    },
-    keys = {
-      {
-        '<leader>dr',
-        function()
-          return ':IncRename ' .. vim.fn.expand '<cword>'
-        end,
-        expr = true,
-        desc = 'Incremental Rename (with Preview)',
-      },
-    },
-  },
-  {
     'aznhe21/actions-preview.nvim',
     event = 'LspAttach',
     dependencies = { 'MunifTanjim/nui.nvim' },
