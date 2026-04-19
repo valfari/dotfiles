@@ -1,0 +1,75 @@
+[core]
+	editor = nvim
+	autocrlf = input
+	whitespace = trailing-space,space-before-tab
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = true
+
+[push]
+	default = current
+	autoSetupRemote = true
+
+[fetch]
+	prune = true
+
+[merge]
+	conflictstyle = zdiff3
+
+[rebase]
+	autosquash = true
+	autostash = true
+
+[diff]
+	algorithm = histogram
+	colorMoved = default
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = -version:refname
+
+[color]
+	ui = auto
+
+[alias]
+	# log
+	lg  = log --oneline --graph --decorate
+	lga = log --oneline --graph --decorate --all
+	lgs = log --oneline --graph --decorate --stat
+
+	# status / diff
+	st  = status -sb
+	d   = diff
+	ds  = diff --staged
+	dw  = diff --word-diff
+
+	# branch
+	br  = branch -vv
+	bra = branch -vva
+	gone = "!git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D"
+
+	# commit
+	ci  = commit
+	ca  = commit --amend --no-edit
+	can = commit --amend
+
+	# undo
+	undo = reset HEAD~1 --soft
+	unstage = restore --staged
+
+	# stash
+	sl = stash list
+	sp = stash pop
+	ss = stash push -m
+
+	# remote
+	rv  = remote -v
+
+	# convenience
+	root = rev-parse --show-toplevel
+	current = rev-parse --abbrev-ref HEAD
