@@ -2,6 +2,8 @@
 	editor = nvim
 	autocrlf = input
 	whitespace = trailing-space,space-before-tab
+	fsmonitor = true
+	untrackedCache = true
 
 [init]
 	defaultBranch = main
@@ -12,9 +14,19 @@
 [push]
 	default = current
 	autoSetupRemote = true
+	followTags = true
 
 [fetch]
 	prune = true
+
+[commit]
+	verbose = true
+
+[help]
+	autocorrect = prompt
+
+[rerere]
+	enabled = true
 
 [merge]
 	conflictstyle = zdiff3
@@ -26,6 +38,13 @@
 [diff]
 	algorithm = histogram
 	colorMoved = default
+	tool = nvim_difftool
+
+[difftool]
+	prompt = false
+
+[difftool "nvim_difftool"]
+	cmd = nvim -c \"packadd nvim.difftool\" -c \"DiffTool $LOCAL $REMOTE\"
 
 [branch]
 	sort = -committerdate
@@ -51,7 +70,7 @@
 	# branch
 	br  = branch -vv
 	bra = branch -vva
-	gone = "!git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D"
+	gone = "!git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D"
 
 	# commit
 	ci  = commit
