@@ -40,12 +40,23 @@ local themes = {
   { scheme = 'gruvbox', bg = 'light', label = 'gruvbox light' },
   { scheme = 'everforest', bg = 'dark', label = 'everforest' },
   { scheme = 'catppuccin-frappe', bg = 'dark', label = 'catppuccin-frappe' },
+  { scheme = 'tokyonight-night', bg = 'dark', label = 'tokyonight-night' },
+  { scheme = 'kanagawa-wave', bg = 'dark', label = 'kanagawa-wave' },
+  { scheme = 'rose-pine', bg = 'dark', label = 'rose-pine' },
+  { scheme = 'nightfox', bg = 'dark', label = 'nightfox' },
+  { scheme = 'onedark', bg = 'dark', label = 'onedark' },
 }
 local current_theme_index = 1
-vim.keymap.set('n', '<leader>ty', function()
-  current_theme_index = current_theme_index % #themes + 1
-  local t = themes[current_theme_index]
+local function apply_theme(t)
   vim.o.background = t.bg
   vim.cmd.colorscheme(t.scheme)
   print('Switched to ' .. t.label)
-end, { desc = 'Toggle theme' })
+end
+vim.keymap.set('n', '<leader>ty', function()
+  current_theme_index = current_theme_index % #themes + 1
+  apply_theme(themes[current_theme_index])
+end, { desc = 'Toggle theme next' })
+vim.keymap.set('n', '<leader>tY', function()
+  current_theme_index = (current_theme_index - 2) % #themes + 1
+  apply_theme(themes[current_theme_index])
+end, { desc = 'Toggle theme prev' })

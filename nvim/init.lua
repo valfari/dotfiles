@@ -21,6 +21,11 @@ require('lazy').setup({
     priority = 1000,
     opts = {},
   },
+  { 'folke/tokyonight.nvim', priority = 1000, opts = { style = 'night' } },
+  { 'rebelot/kanagawa.nvim', priority = 1000, opts = {} },
+  { 'rose-pine/neovim', name = 'rose-pine', priority = 1000, opts = {} },
+  { 'EdenEast/nightfox.nvim', priority = 1000, opts = {} },
+  { 'navarasu/onedark.nvim', priority = 1000, opts = {} },
   { import = 'plugins' },
 }, {
   ui = {
