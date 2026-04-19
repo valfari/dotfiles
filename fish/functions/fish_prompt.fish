@@ -15,6 +15,15 @@ function fish_prompt
         set_color normal
     end
 
+    # Python venv
+    if test -n "$VIRTUAL_ENV"
+        set_color '#565f89'
+        echo -n '  '
+        set_color '#e0af68'
+        echo -n (basename $VIRTUAL_ENV)
+        set_color normal
+    end
+
     # Prompt char — green on success, red on error
     echo -n ' '
     if test $last_status -eq 0

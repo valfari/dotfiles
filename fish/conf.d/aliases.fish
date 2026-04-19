@@ -1,6 +1,6 @@
-# Simple git aliases
-alias gpl='git pull'
-alias gps='git push'
-alias gpsf='git push --force'
-alias gb='git branch'
-alias guc='git reset HEAD~1 --soft'
+# Git abbreviations (expand in-place before execution)
+abbr -a gpl git pull
+abbr -a gps git push
+abbr -a gpsf git push --force
+abbr -a gb git branch
+abbr -a guc git reset HEAD~1 --soft
