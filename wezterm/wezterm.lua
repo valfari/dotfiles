@@ -130,23 +130,8 @@ return {
 			mods = "CTRL|SHIFT",
 			action = wezterm.action({ ActivateTabRelative = -1 }),
 		}, -- standard copy/paste bindings
-		-- {
-		-- 	key = "x",
-		-- 	mods = "CTRL",
-		-- 	action = "ActivateCopyMode",
-		-- },
-		-- {
-		-- 	key = "v",
-		-- 	mods = "CTRL",
-		-- 	action = wezterm.action({ PasteFrom = "Clipboard" }),
-		-- },
-		-- {
-		-- 	key = "c",
-		-- 	mods = "CTRL",
-		-- 	action = wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }),
-		-- },
-		{ key = "PageUp", mods = "SHIFT", action = act.ScrollByPage(-1) },
-		{ key = "PageDown", mods = "SHIFT", action = act.ScrollByPage(1) },
+		{ key = "c", mods = "CMD", action = wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }) },
+		{ key = "v", mods = "CMD", action = wezterm.action({ PasteFrom = "Clipboard" }) },
 	},
 
 	-- Aesthetic Night Colorscheme
