@@ -112,7 +112,7 @@ return {
     keys = {
       {
         's',
-        mode = { 'n', 'x', 'o' },
+        mode = { 'n', 'o' },
         function()
           require('flash').jump()
         end,
@@ -120,51 +120,11 @@ return {
       },
       {
         'S',
-        mode = { 'n', 'x', 'o' },
+        mode = { 'n', 'o' },
         function()
           require('flash').treesitter()
         end,
         desc = 'Flash Treesitter',
-      },
-      -- {
-      --   'r',
-      --   mode = 'o',
-      --   function()
-      --     require('flash').remote()
-      --   end,
-      --   desc = 'Remote Flash',
-      -- },
-      -- {
-      --   'R',
-      --   mode = { 'o', 'x' },
-      --   function()
-      --     require('flash').treesitter_search()
-      --   end,
-      --   desc = 'Treesitter Search',
-      -- },
-      {
-        '<c-s>',
-        mode = { 'c' },
-        function()
-          require('flash').toggle()
-        end,
-        desc = 'Toggle Flash Search',
-      },
-      -- New: Incremental Treesitter selection with textobjects
-      {
-        '<c-space>',
-        mode = { 'n', 'x', 'o' },
-        function()
-          require('flash').treesitter {
-            labels = 'abcdefghijklmnopqrstuvwxyz',
-            search = { multi_window = false, wrap = false, incremental = true },
-            actions = {
-              ['<c-space>'] = 'next',
-              ['<BS>'] = 'prev',
-            },
-          }
-        end,
-        desc = 'Treesitter Incremental Selection (e.g., expand to function/class)',
       },
     },
   },
