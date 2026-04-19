@@ -49,4 +49,65 @@ return {
     end,
     keys = { '<leader>gy' },
   },
+  {
+    'echasnovski/mini.diff',
+    version = false,
+    opts = {
+      -- gitsigns already owns the gutter; use empty signs here
+      view = {
+        style = 'sign',
+        signs = { add = '', change = '', delete = '' },
+      },
+      mappings = {
+        apply = 'gh',
+        reset = 'gH',
+        textobject = 'gh',
+        goto_first = '[H',
+        goto_prev = '[h',
+        goto_next = ']h',
+        goto_last = ']H',
+      },
+    },
+    keys = {
+      -- Toggle the inline overlay (shows ref text side-by-side in the buffer)
+      {
+        '<leader>go',
+        function() require('mini.diff').toggle_overlay(0) end,
+        desc = 'Diff overlay toggle',
+      },
+      -- Diff current buffer vs system clipboard
+      {
+        '<leader>gc',
+        function()
+          require('mini.diff').set_ref_text(0, vim.fn.getreg '+')
+        end,
+        desc = 'Diff vs clipboard',
+      },
+      -- Diff current buffer vs an arbitrary git ref (branch, commit, tag…)
+      {
+        '<leader>gv',
+        function()
+          vim.ui.input({ prompt = 'Git ref to diff against: ' }, function(ref)
+            if not ref or ref == '' then return end
+            local path = vim.api.nvim_buf_get_name(0)
+            local lines = vim.fn.systemlist('git show ' .. ref .. ':' .. path)
+            if vim.v.shell_error ~= 0 then
+              vim.notify('git show failed: ' .. table.concat(lines, '\n'), vim.log.levels.ERROR)
+              return
+            end
+            require('mini.diff').set_ref_text(0, lines)
+          end)
+        end,
+        desc = 'Diff vs git ref',
+      },
+      -- Reset ref back to git index (HEAD)
+      {
+        '<leader>gV',
+        function()
+          require('mini.diff').set_source(0, require('mini.diff').gen_source.git())
+        end,
+        desc = 'Diff reset to git HEAD',
+      },
+    },
+  },
 }
