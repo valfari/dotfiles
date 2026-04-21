@@ -59,8 +59,19 @@ vim.opt.diffopt:append 'inline:char'
 
 vim.o.winborder = 'rounded'
 
+_G._foldexpr = function()
+  local buf = vim.api.nvim_get_current_buf()
+  if #vim.lsp.get_clients { bufnr = buf } > 0 then
+    return vim.lsp.foldexpr()
+  end
+  if vim.treesitter.highlighter.active[buf] then
+    return vim.treesitter.foldexpr()
+  end
+  return '0'
+end
+
 vim.o.foldmethod = 'expr'
-vim.o.foldexpr = 'v:lua.vim.lsp.foldexpr()'
+vim.o.foldexpr = 'v:lua._foldexpr()'
 vim.o.foldcolumn = '1'
 vim.o.foldlevel = 99
 vim.o.foldenable = true
