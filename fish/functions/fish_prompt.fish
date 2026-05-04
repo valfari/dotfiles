@@ -1,35 +1,32 @@
 function fish_prompt
     set -l last_status $status
 
-    set_color '#7aa2f7'
+    set_color blue
     echo -n (prompt_pwd)
     set_color normal
 
-    # Git branch
     set -l branch (git branch --show-current 2>/dev/null)
     if test -n "$branch"
-        set_color '#565f89'
+        set_color brblack
         echo -n '  '
-        set_color '#bb9af7'
+        set_color magenta
         echo -n $branch
         set_color normal
     end
 
-    # Python venv
     if test -n "$VIRTUAL_ENV"
-        set_color '#565f89'
+        set_color brblack
         echo -n '  '
-        set_color '#e0af68'
+        set_color yellow
         echo -n (basename $VIRTUAL_ENV)
         set_color normal
     end
 
-    # Prompt char — green on success, red on error
     echo -n ' '
     if test $last_status -eq 0
-        set_color '#9ece6a'
+        set_color green
     else
-        set_color '#f7768e'
+        set_color red
     end
     echo -n '❯ '
     set_color normal

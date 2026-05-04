@@ -40,14 +40,15 @@ local accent_colors = {
 	"#2e6680", -- cyan
 }
 local themes = {
-	"Tokyo Night Storm",       -- blue (default)
-	"Everforest Dark (Gogh)",  -- green
-	"GruvboxDark",             -- orange
-	"rose-pine",               -- red
-	"Dracula",                 -- purple
-	"nord",                    -- cyan
+	{ scheme = "Tokyo Night Storm",      branch_fg = "#7aa2f7", time_fg = "#565f89" },
+	{ scheme = "Everforest Dark (Gogh)", branch_fg = "#a7c080", time_fg = "#7a8478" },
+	{ scheme = "GruvboxDark",            branch_fg = "#fabd2f", time_fg = "#928374" },
+	{ scheme = "rose-pine",              branch_fg = "#ebbcba", time_fg = "#6e6a86" },
+	{ scheme = "Dracula",                branch_fg = "#ff79c6", time_fg = "#6272a4" },
+	{ scheme = "nord",                   branch_fg = "#88c0d0", time_fg = "#4c566a" },
 }
 local tab_colors = {}
+local last_applied = {} -- [win_id] = idx last passed to apply_tab_color
 
 wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 	local pane = tab.active_pane
@@ -82,7 +83,7 @@ end)
 
 local function apply_tab_color(window, idx)
 	window:set_config_overrides({
-		color_scheme = themes[idx],
+		color_scheme = themes[idx].scheme,
 		colors = {
 			tab_bar = {
 				background = "#1f2335",
@@ -93,35 +94,15 @@ local function apply_tab_color(window, idx)
 	})
 end
 
-wezterm.on("update-right-status", function(window, pane)
-	-- Apply per-tab background tint to all panes in the active tab
+wezterm.on("update-right-status", function(window, _)
 	local id = window:active_tab():tab_id()
-	apply_tab_color(window, tab_colors[id] or 1)
-
-	local cwd_uri = pane:get_current_working_dir()
-	local branch = ""
-	if cwd_uri then
-		local ok, stdout, _ = wezterm.run_child_process({
-			"git",
-			"-C",
-			cwd_uri.file_path,
-			"rev-parse",
-			"--abbrev-ref",
-			"HEAD",
-		})
-		if ok then
-			branch = "  " .. stdout:gsub("%s+$", "") .. "  "
-		end
+	local idx = tab_colors[id] or 1
+	local win_id = window:window_id()
+	if last_applied[win_id] ~= idx then
+		apply_tab_color(window, idx)
+		last_applied[win_id] = idx
 	end
-
-	local time = wezterm.strftime(" %H:%M ")
-
-	window:set_right_status(wezterm.format({
-		{ Foreground = { Color = "#7aa2f7" } },
-		{ Text = branch },
-		{ Foreground = { Color = "#565f89" } },
-		{ Text = time },
-	}))
+	window:set_right_status("")
 end)
 
 wezterm.on("cycle-tab-color-next", function(window, _)

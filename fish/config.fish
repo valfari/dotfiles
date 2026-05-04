@@ -32,3 +32,10 @@ end
 if command -q direnv
     direnv hook fish | source
 end
+
+# WezTerm: report cwd changes via OSC 7 so pane:get_current_working_dir() stays current
+function __wezterm_osc7 --on-variable PWD
+    if status is-interactive
+        printf "\e]7;file://%s%s\a" (hostname) (pwd | string escape --style url)
+    end
+end
