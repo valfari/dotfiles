@@ -20,7 +20,17 @@ local process_icons = {
 }
 
 -- Tab colors (cycled per-tab with PageUp/PageDown)
--- accent_colors: active tab bar highlight; bg_tints: terminal background for all panes in the tab
+-- active_accent_colors: bright, used for the currently active tab in the tab bar
+-- accent_colors: dimmed, used for inactive tabs in the tab bar
+-- bg_tints: terminal background tint for all panes in the tab
+local active_accent_colors = {
+	"#3d59a1", -- blue (default)
+	"#9ece6a", -- green
+	"#e0af68", -- orange
+	"#f7768e", -- red
+	"#bb9af7", -- purple
+	"#7dcfff", -- cyan
+}
 local accent_colors = {
 	"#2c4172", -- blue (default)
 	"#4d7a34", -- green
@@ -48,13 +58,12 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 
 	-- Tokyo Night Storm palette
 	local tab_bar_bg = "#1f2335"
-	local active_bg = accent_colors[tab_colors[tab.tab_id] or 1]
+	local idx = tab_colors[tab.tab_id] or 1
 	local active_fg = "#c0caf5"
-	local inactive_bg = "#24283b"
 	local inactive_fg = "#565f89"
 	local hover_bg = "#2d3f76"
 
-	local bg = tab.is_active and active_bg or (hover and hover_bg or inactive_bg)
+	local bg = hover and hover_bg or active_accent_colors[idx]
 	local fg = tab.is_active and active_fg or inactive_fg
 
 	local idx = tab.tab_index + 1
