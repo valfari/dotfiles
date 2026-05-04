@@ -24,12 +24,12 @@ local process_icons = {
 -- accent_colors: dimmed, used for inactive tabs in the tab bar
 -- bg_tints: terminal background tint for all panes in the tab
 local active_accent_colors = {
-	"#3d59a1", -- blue (default)
-	"#9ece6a", -- green
-	"#e0af68", -- orange
-	"#f7768e", -- red
-	"#bb9af7", -- purple
-	"#7dcfff", -- cyan
+	"#2e4379", -- blue (default)
+	"#779b50", -- green
+	"#a8834e", -- orange
+	"#b9596b", -- red
+	"#8c74b9", -- purple
+	"#5e9bbf", -- cyan
 }
 local accent_colors = {
 	"#2c4172", -- blue (default)
@@ -40,12 +40,12 @@ local accent_colors = {
 	"#2e6680", -- cyan
 }
 local bg_tints = {
-	"#24283b", -- default Tokyo Night Storm bg
-	"#1e2b1e", -- green
-	"#2b2218", -- orange
-	"#2b1e1e", -- red
-	"#1e1b2b", -- purple
-	"#1b2b2b", -- cyan
+	"#24283b", -- blue (Tokyo Night Storm default)
+	"#3a5828", -- green
+	"#7a5520", -- orange
+	"#723c44", -- red
+	"#554772", -- purple
+	"#2a5e78", -- cyan
 }
 local tab_colors = {}
 
@@ -297,7 +297,7 @@ return {
 	hide_tab_bar_if_only_one_tab = true,
 	tab_bar_at_bottom = false,
 	show_new_tab_button_in_tab_bar = false,
-	tab_max_width = 64,
+	tab_max_width = 85,
 	colors = {
 		tab_bar = {
 			background = "#1f2335",
