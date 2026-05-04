@@ -22,12 +22,12 @@ local process_icons = {
 -- Tab colors (cycled per-tab with PageUp/PageDown)
 -- accent_colors: active tab bar highlight; bg_tints: terminal background for all panes in the tab
 local accent_colors = {
-	"#3d59a1", -- blue (default)
-	"#9ece6a", -- green
-	"#e0af68", -- orange
-	"#f7768e", -- red
-	"#bb9af7", -- purple
-	"#7dcfff", -- cyan
+	"#2c4172", -- blue (default)
+	"#4d7a34", -- green
+	"#7a5e2e", -- orange
+	"#7a3344", -- red
+	"#5a4280", -- purple
+	"#2e6680", -- cyan
 }
 local bg_tints = {
 	"#24283b", -- default Tokyo Night Storm bg
