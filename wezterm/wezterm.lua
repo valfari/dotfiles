@@ -22,7 +22,7 @@ local process_icons = {
 -- Tab colors (cycled per-tab with PageUp/PageDown)
 -- active_accent_colors: bright, used for the currently active tab in the tab bar
 -- accent_colors: dimmed, used for inactive tabs in the tab bar
--- bg_tints: terminal background tint for all panes in the tab
+-- themes: full color scheme applied to all panes in the tab
 local active_accent_colors = {
 	"#2e4379", -- blue (default)
 	"#779b50", -- green
@@ -39,13 +39,13 @@ local accent_colors = {
 	"#5a4280", -- purple
 	"#2e6680", -- cyan
 }
-local bg_tints = {
-	"#24283b", -- blue (Tokyo Night Storm default)
-	"#3a5828", -- green
-	"#7a5520", -- orange
-	"#723c44", -- red
-	"#554772", -- purple
-	"#2a5e78", -- cyan
+local themes = {
+	"Tokyo Night Storm",       -- blue (default)
+	"Everforest Dark (Gogh)",  -- green
+	"GruvboxDark",             -- orange
+	"rose-pine",               -- red
+	"Dracula",                 -- purple
+	"nord",                    -- cyan
 }
 local tab_colors = {}
 
@@ -82,8 +82,8 @@ end)
 
 local function apply_tab_color(window, idx)
 	window:set_config_overrides({
+		color_scheme = themes[idx],
 		colors = {
-			background = bg_tints[idx],
 			tab_bar = {
 				background = "#1f2335",
 				new_tab = { bg_color = "#1f2335", fg_color = "#565f89" },
