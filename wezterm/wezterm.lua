@@ -27,22 +27,55 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 	local dir = cwd and cwd.file_path:match("([^/]+)$") or "~"
 
 	-- Tokyo Night Storm palette
+	local tab_bar_bg = "#1f2335"
 	local active_bg = "#3d59a1"
 	local active_fg = "#c0caf5"
-	local inactive_bg = "#1f2335"
+	local inactive_bg = "#24283b"
 	local inactive_fg = "#565f89"
 	local hover_bg = "#2d3f76"
 
 	local bg = tab.is_active and active_bg or (hover and hover_bg or inactive_bg)
 	local fg = tab.is_active and active_fg or inactive_fg
 
-	local title = string.format(" %s  %s ", icon, wezterm.truncate_right(dir, max_width - 6))
+	local idx = tab.tab_index + 1
+	local title = string.format(" %d: %s  %s ", idx, icon, wezterm.truncate_right(dir, max_width - 8))
 
 	return {
 		{ Background = { Color = bg } },
 		{ Foreground = { Color = fg } },
 		{ Text = title },
+		-- powerline right arrow
+		{ Background = { Color = tab_bar_bg } },
+		{ Foreground = { Color = bg } },
+		{ Text = "" },
 	}
+end)
+
+wezterm.on("update-right-status", function(window, pane)
+	local cwd_uri = pane:get_current_working_dir()
+	local branch = ""
+	if cwd_uri then
+		local ok, stdout, _ = wezterm.run_child_process({
+			"git",
+			"-C",
+			cwd_uri.file_path,
+			"rev-parse",
+			"--abbrev-ref",
+			"HEAD",
+		})
+		if ok then
+			branch = "  " .. stdout:gsub("%s+$", "") .. "  "
+		end
+	end
+
+	local time = wezterm.strftime(" %H:%M ")
+
+	window:set_right_status(wezterm.format({
+		{ Foreground = { Color = "#7aa2f7" } },
+		{ Text = branch },
+		{ Foreground = { Color = "#565f89" } },
+		{ Text = time },
+	}))
 end)
 
 return {
@@ -172,6 +205,16 @@ return {
 		}, -- standard copy/paste bindings
 		{ key = "c", mods = "CMD", action = wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }) },
 		{ key = "v", mods = "CMD", action = wezterm.action({ PasteFrom = "Clipboard" }) },
+		-- jump to tab by index
+		{ key = "1", mods = "CMD", action = wezterm.action({ ActivateTab = 0 }) },
+		{ key = "2", mods = "CMD", action = wezterm.action({ ActivateTab = 1 }) },
+		{ key = "3", mods = "CMD", action = wezterm.action({ ActivateTab = 2 }) },
+		{ key = "4", mods = "CMD", action = wezterm.action({ ActivateTab = 3 }) },
+		{ key = "5", mods = "CMD", action = wezterm.action({ ActivateTab = 4 }) },
+		{ key = "6", mods = "CMD", action = wezterm.action({ ActivateTab = 5 }) },
+		{ key = "7", mods = "CMD", action = wezterm.action({ ActivateTab = 6 }) },
+		{ key = "8", mods = "CMD", action = wezterm.action({ ActivateTab = 7 }) },
+		{ key = "9", mods = "CMD", action = wezterm.action({ ActivateTab = 8 }) },
 	},
 
 	-- Aesthetic Night Colorscheme
@@ -189,8 +232,9 @@ return {
 	enable_tab_bar = true,
 	use_fancy_tab_bar = false,
 	hide_tab_bar_if_only_one_tab = true,
-	tab_bar_at_bottom = true,
-	tab_max_width = 32,
+	tab_bar_at_bottom = false,
+	show_new_tab_button_in_tab_bar = false,
+	tab_max_width = 64,
 	colors = {
 		tab_bar = {
 			background = "#1f2335",
@@ -199,7 +243,9 @@ return {
 		},
 	},
 	-- General
-	window_decorations = "TITLE | RESIZE",
+	window_decorations = "INTEGRATED_BUTTONS | RESIZE",
+	macos_window_background_blur = 20,
+	window_background_opacity = 0.92,
 	automatically_reload_config = true,
 	inactive_pane_hsb = { saturation = 0.5, brightness = 0.5 },
 	window_close_confirmation = "NeverPrompt",
