@@ -71,10 +71,7 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 	}
 end)
 
-wezterm.on("update-right-status", function(window, pane)
-	-- Apply per-tab background tint to all panes in the active tab
-	local id = window:active_tab():tab_id()
-	local idx = tab_colors[id] or 1
+local function apply_tab_color(window, idx)
 	window:set_config_overrides({
 		colors = {
 			background = bg_tints[idx],
@@ -85,6 +82,12 @@ wezterm.on("update-right-status", function(window, pane)
 			},
 		},
 	})
+end
+
+wezterm.on("update-right-status", function(window, pane)
+	-- Apply per-tab background tint to all panes in the active tab
+	local id = window:active_tab():tab_id()
+	apply_tab_color(window, tab_colors[id] or 1)
 
 	local cwd_uri = pane:get_current_working_dir()
 	local branch = ""
@@ -114,14 +117,16 @@ end)
 
 wezterm.on("cycle-tab-color-next", function(window, _)
 	local id = window:active_tab():tab_id()
-	local idx = tab_colors[id] or 1
-	tab_colors[id] = (idx % #accent_colors) + 1
+	local idx = (tab_colors[id] or 1) % #accent_colors + 1
+	tab_colors[id] = idx
+	apply_tab_color(window, idx)
 end)
 
 wezterm.on("cycle-tab-color-prev", function(window, _)
 	local id = window:active_tab():tab_id()
-	local idx = tab_colors[id] or 1
-	tab_colors[id] = ((idx - 2) % #accent_colors) + 1
+	local idx = ((tab_colors[id] or 1) - 2) % #accent_colors + 1
+	tab_colors[id] = idx
+	apply_tab_color(window, idx)
 end)
 
 return {
