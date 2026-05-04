@@ -19,6 +19,26 @@ local process_icons = {
 	lazygit = "",
 }
 
+-- Tab colors (cycled per-tab with PageUp/PageDown)
+-- accent_colors: active tab bar highlight; bg_tints: terminal background for all panes in the tab
+local accent_colors = {
+	"#3d59a1", -- blue (default)
+	"#9ece6a", -- green
+	"#e0af68", -- orange
+	"#f7768e", -- red
+	"#bb9af7", -- purple
+	"#7dcfff", -- cyan
+}
+local bg_tints = {
+	"#24283b", -- default Tokyo Night Storm bg
+	"#1e2b1e", -- green
+	"#2b2218", -- orange
+	"#2b1e1e", -- red
+	"#1e1b2b", -- purple
+	"#1b2b2b", -- cyan
+}
+local tab_colors = {}
+
 wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 	local pane = tab.active_pane
 	local proc = pane.foreground_process_name:match("([^/]+)$") or ""
@@ -28,7 +48,7 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 
 	-- Tokyo Night Storm palette
 	local tab_bar_bg = "#1f2335"
-	local active_bg = "#3d59a1"
+	local active_bg = accent_colors[tab_colors[tab.tab_id] or 1]
 	local active_fg = "#c0caf5"
 	local inactive_bg = "#24283b"
 	local inactive_fg = "#565f89"
@@ -52,6 +72,20 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 end)
 
 wezterm.on("update-right-status", function(window, pane)
+	-- Apply per-tab background tint to all panes in the active tab
+	local id = window:active_tab():tab_id()
+	local idx = tab_colors[id] or 1
+	window:set_config_overrides({
+		colors = {
+			background = bg_tints[idx],
+			tab_bar = {
+				background = "#1f2335",
+				new_tab = { bg_color = "#1f2335", fg_color = "#565f89" },
+				new_tab_hover = { bg_color = "#2d3f76", fg_color = "#c0caf5" },
+			},
+		},
+	})
+
 	local cwd_uri = pane:get_current_working_dir()
 	local branch = ""
 	if cwd_uri then
@@ -76,6 +110,18 @@ wezterm.on("update-right-status", function(window, pane)
 		{ Foreground = { Color = "#565f89" } },
 		{ Text = time },
 	}))
+end)
+
+wezterm.on("cycle-tab-color-next", function(window, _)
+	local id = window:active_tab():tab_id()
+	local idx = tab_colors[id] or 1
+	tab_colors[id] = (idx % #accent_colors) + 1
+end)
+
+wezterm.on("cycle-tab-color-prev", function(window, _)
+	local id = window:active_tab():tab_id()
+	local idx = tab_colors[id] or 1
+	tab_colors[id] = ((idx - 2) % #accent_colors) + 1
 end)
 
 return {
@@ -215,6 +261,9 @@ return {
 		{ key = "7", mods = "CMD", action = wezterm.action({ ActivateTab = 6 }) },
 		{ key = "8", mods = "CMD", action = wezterm.action({ ActivateTab = 7 }) },
 		{ key = "9", mods = "CMD", action = wezterm.action({ ActivateTab = 8 }) },
+		-- cycle active tab accent color
+		{ key = "PageUp", mods = "NONE", action = wezterm.action.EmitEvent("cycle-tab-color-next") },
+		{ key = "PageDown", mods = "NONE", action = wezterm.action.EmitEvent("cycle-tab-color-prev") },
 	},
 
 	-- Aesthetic Night Colorscheme
