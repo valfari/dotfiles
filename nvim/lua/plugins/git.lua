@@ -47,6 +47,11 @@ return {
         -- Diff this buffer
         map('n', '<leader>gd', gs.diffthis, 'Diff buffer vs index')
         map('n', '<leader>gD', function() gs.diffthis('~') end, 'Diff buffer vs last commit')
+        map('n', '<leader>di', function()
+          local branch = vim.fn.input('Branch to diff (default HEAD): ')
+          if branch == '' then branch = 'HEAD' end
+          gs.diffthis(branch)
+        end, 'Diff current file inline vs branch')
 
         -- Quickfix
         map('n', '<leader>gq', gs.setqflist, 'Hunks to quickfix')
@@ -57,46 +62,57 @@ return {
     },
   },
   {
-    'esmuellert/codediff.nvim',
-    cmd = 'CodeDiff',
+    'sindrets/diffview.nvim',
+    cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewFileHistory' },
     opts = {
-      diff = {
-        layout = 'side-by-side',
-        disable_inlay_hints = true,
-        compute_moves = false,
+      enhanced_diff_hl = true,
+      view = {
+        default = {
+          layout = 'diff2_vertical',
+          winbar_info = true,
+        },
+        file_history = {
+          layout = 'diff2_vertical',
+          winbar_info = true,
+        },
       },
-      explorer = {
-        position = 'left',
-        width = 40,
-        view_mode = 'tree',
-        flatten_dirs = true,
-        indent_markers = true,
-        visible_groups = { staged = true, unstaged = true, conflicts = true },
+      file_panel = {
+        win_config = {
+          width = 30,
+        },
       },
     },
+    config = function(_, opts)
+      require('diffview').setup(opts)
+      vim.opt.fillchars:append('vert:│')
+      vim.opt.diffopt:append('algorithm:histogram,indent-heuristic,linematch:60')
+
+      local function set_hl()
+        local comment = vim.api.nvim_get_hl(0, { name = 'Comment', link = false })
+        vim.api.nvim_set_hl(0, 'DiffviewWinSeparator', {
+          fg = comment.fg,
+          bg = comment.bg,
+          bold = true,
+        })
+      end
+
+      set_hl()
+      vim.api.nvim_create_autocmd('ColorScheme', { callback = set_hl })
+    end,
     keys = {
-      { '<leader>dd', '<cmd>CodeDiff<cr>', desc = 'Diff explorer' },
-      { '<leader>dh', '<cmd>CodeDiff HEAD<cr>', desc = 'Diff vs HEAD' },
-      { '<leader>dH', '<cmd>CodeDiff history<cr>', desc = 'Diff commit history' },
+      { '<leader>dd', '<cmd>DiffviewOpen<cr>', desc = 'Diff explorer' },
+      { '<leader>dh', '<cmd>DiffviewOpen HEAD<cr>', desc = 'Diff vs HEAD' },
+      { '<leader>dH', '<cmd>DiffviewFileHistory<cr>', desc = 'Diff commit history' },
       {
         '<leader>db',
         function()
           local branch = vim.fn.input('Branch to diff (default HEAD): ')
           if branch == '' then branch = 'HEAD' end
-          vim.cmd('CodeDiff ' .. branch)
+          vim.cmd('DiffviewOpen ' .. branch)
         end,
         desc = 'Diff vs branch',
       },
-      {
-        '<leader>di',
-        function()
-          local branch = vim.fn.input('Branch to diff (default HEAD): ')
-          if branch == '' then branch = 'HEAD' end
-          vim.cmd('CodeDiff file ' .. branch .. ' --inline')
-        end,
-        desc = 'Diff current file inline vs branch',
-      },
-      { '<leader>dq', '<cmd>CodeDiff<cr>', desc = 'Close diff' },
+      { '<leader>dq', '<cmd>DiffviewClose<cr>', desc = 'Close diff' },
     },
   },
 }

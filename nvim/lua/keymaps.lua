@@ -81,11 +81,34 @@ local function apply_theme(t)
   vim.cmd.colorscheme(t.scheme)
   print('Switched to ' .. t.label)
 end
-vim.keymap.set('n', '<leader>ty', function()
+_G._theme_toggle_next = function()
   current_theme_index = current_theme_index % #themes + 1
   apply_theme(themes[current_theme_index])
-end, { desc = 'Toggle theme next' })
-vim.keymap.set('n', '<leader>tY', function()
+end
+_G._theme_toggle_prev = function()
   current_theme_index = (current_theme_index - 2) % #themes + 1
   apply_theme(themes[current_theme_index])
-end, { desc = 'Toggle theme prev' })
+end
+vim.keymap.set('n', '<leader>ty', function()
+  vim.go.operatorfunc = 'v:lua._theme_toggle_next'
+  return 'g@l'
+end, { expr = true, desc = 'Toggle theme next' })
+vim.keymap.set('n', '<leader>tY', function()
+  vim.go.operatorfunc = 'v:lua._theme_toggle_prev'
+  return 'g@l'
+end, { expr = true, desc = 'Toggle theme prev' })
+
+-- DIFF ALGORITHM TOGGLE
+local diff_algorithms = { 'myers', 'patience', 'histogram' }
+local diff_algo_index = 3 -- start at histogram
+_G._diff_algo_toggle = function()
+  diff_algo_index = diff_algo_index % #diff_algorithms + 1
+  local algo = diff_algorithms[diff_algo_index]
+  vim.opt.diffopt:remove(vim.tbl_map(function(a) return 'algorithm:' .. a end, diff_algorithms))
+  vim.opt.diffopt:append('algorithm:' .. algo)
+  vim.notify('Diff algorithm: ' .. algo)
+end
+vim.keymap.set('n', '<leader>dt', function()
+  vim.go.operatorfunc = 'v:lua._diff_algo_toggle'
+  return 'g@l'
+end, { expr = true, desc = '[D]iff algorithm [T]oggle' })
