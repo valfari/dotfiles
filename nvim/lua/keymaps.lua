@@ -9,6 +9,12 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- WINDOW RESIZE
+vim.keymap.set('n', '<A-k>', '<cmd>resize +10<CR>', { desc = 'Increase window height' })
+vim.keymap.set('n', '<A-j>', '<cmd>resize -10<CR>', { desc = 'Decrease window height' })
+vim.keymap.set('n', '<A-l>', '<cmd>vertical resize +10<CR>', { desc = 'Increase window width' })
+vim.keymap.set('n', '<A-h>', '<cmd>vertical resize -10<CR>', { desc = 'Decrease window width' })
+
 -- COMMENT (native Neovim 0.10+ gc/gb operators)
 vim.keymap.set({ 'n', 'x' }, '<leader>tcl', 'gc', { remap = true, desc = '[T]oggle [C]omment [L]ine' })
 vim.keymap.set({ 'n', 'x' }, '<leader>tcb', 'gb', { remap = true, desc = '[T]oggle [C]omment [B]lock' })
@@ -33,6 +39,25 @@ end, { desc = 'Diff vs clipboard' })
 vim.cmd('packadd nvim.undotree')
 vim.cmd('packadd nvim.difftool')
 vim.keymap.set('n', '<leader>u', '<cmd>Undotree<CR>', { desc = 'Toggle Undotree' })
+
+-- COPY PATH
+vim.keymap.set('n', '<leader>y', function()
+  local path
+  if vim.bo.filetype == 'oil' then
+    local oil = require('oil')
+    local entry = oil.get_cursor_entry()
+    local dir = oil.get_current_dir()
+    if entry and dir then
+      path = dir .. entry.name
+    end
+  else
+    path = vim.fn.expand('%:p')
+  end
+  if path and path ~= '' then
+    vim.fn.setreg('+', path)
+    vim.notify('Copied: ' .. path)
+  end
+end, { desc = 'Copy absolute path' })
 
 -- EXECUTE COMMANDS
 vim.keymap.set('v', '<leader>el', ':lua<CR>', { desc = '[E]xecute [L]ua' })

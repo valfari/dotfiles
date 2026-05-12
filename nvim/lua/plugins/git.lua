@@ -78,6 +78,25 @@ return {
       { '<leader>dd', '<cmd>CodeDiff<cr>', desc = 'Diff explorer' },
       { '<leader>dh', '<cmd>CodeDiff HEAD<cr>', desc = 'Diff vs HEAD' },
       { '<leader>dH', '<cmd>CodeDiff history<cr>', desc = 'Diff commit history' },
+      {
+        '<leader>db',
+        function()
+          local branch = vim.fn.input('Branch to diff (default HEAD): ')
+          if branch == '' then branch = 'HEAD' end
+          vim.cmd('CodeDiff ' .. branch)
+        end,
+        desc = 'Diff vs branch',
+      },
+      {
+        '<leader>di',
+        function()
+          local branch = vim.fn.input('Branch to diff (default HEAD): ')
+          if branch == '' then branch = 'HEAD' end
+          vim.cmd('CodeDiff file ' .. branch .. ' --inline')
+        end,
+        desc = 'Diff current file inline vs branch',
+      },
+      { '<leader>dq', '<cmd>CodeDiff<cr>', desc = 'Close diff' },
     },
   },
 }
