@@ -132,9 +132,7 @@ return {
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, vim.tbl_extend('force', bufopts, { desc = 'Goto Declaration' }))
           vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, vim.tbl_extend('force', bufopts, { desc = 'Goto Type Definition' }))
           vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, vim.tbl_extend('force', bufopts, { desc = 'Goto Implementation' }))
-          vim.keymap.set('n', 'gr', function()
-            require('fzf-lua').lsp_references { jump1 = true }
-          end, vim.tbl_extend('force', bufopts, { desc = 'Goto References' }))
+          vim.keymap.set('n', 'gr', vim.lsp.buf.references, vim.tbl_extend('force', bufopts, { desc = 'Goto References' }))
           vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, vim.tbl_extend('force', bufopts, { desc = 'Code Action' }))
           vim.keymap.set('n', '<leader>rnn', vim.lsp.buf.rename, vim.tbl_extend('force', bufopts, { desc = 'Rename' }))
           vim.keymap.set('n', 'gp', function()

@@ -128,139 +128,37 @@ return {
   },
 
   {
-    'ibhagwan/fzf-lua',
-    event = 'VeryLazy',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    opts = { 'skim' },
-    config = function()
-      local fzf = require 'fzf-lua'
-
-      -- Common excludes: only .git + some large/noisy dirs you probably never want
-      local common_excludes = {
-        '--exclude',
-        '.git', -- ONLY .git is fully excluded
-        '--exclude',
-        'node_modules',
-        '--exclude',
-        '.venv',
-        '--exclude',
-        '.cache',
-        '--exclude',
-        'Library',
-        '--exclude',
-        'Pictures',
-        '--exclude',
-        'Movies',
-        '--exclude',
-        'Music',
-        '--exclude',
-        'Desktop',
-      }
-
-      -- Convert to space-separated string for fd_opts
-      local fd_excludes = table.concat(common_excludes, ' ')
-
-      -- For ripgrep: use glob negation, but only exclude .git directory contents
-      local rg_globs = {
-        '--hidden',
-        '--glob=!.git/*', -- exclude everything inside .git
-        '--glob=!node_modules/*',
-        '--glob=!.venv/*',
-        '--glob=!.cache/*',
-        '--glob=!Library/*',
-        '--glob=!Pictures/*',
-        '--glob=!Movies/*',
-        '--glob=!Music/*',
-        '--glob=!Desktop/*',
-      }
-      local rg_opts = table.concat(rg_globs, ' ')
-
-      fzf.setup {
-        'fzf-native',
-        winopts = {
-          preview = { default = 'bat' },
-        },
-        keymap = {
-          fzf = {
-            ['ctrl-u'] = 'preview-page-up',
-            ['ctrl-d'] = 'preview-page-down',
-            ['ctrl-k'] = 'up',
-            ['ctrl-j'] = 'down',
-            ['ctrl-q'] = 'abort',
-          },
-        },
-        fzf_opts = {
-          ['--tiebreak'] = 'index',
-        },
-        defaults = {
-          git_icons = true,
-          file_icons = true,
-          color_icons = true,
-        },
-
-        -- File finder: include hidden files/dirs, exclude only .git + noisy dirs
-        files = {
-          fd_opts = '--type f --hidden --strip-cwd-prefix ' .. fd_excludes,
-          previewer = 'bat',
-        },
-
-        -- Grep & live_grep: search hidden files, but never enter .git
-        grep = {
-          rg_opts = '--column --line-number --no-heading --color=always --smart-case ' .. rg_opts,
-          previewer = 'bat',
-        },
-        live_grep = {
-          rg_opts = '--column --line-number --no-heading --color=always --smart-case ' .. rg_opts,
-          previewer = 'bat',
-        },
-
-        buffers = {
-          sort_lastused = true,
-          previewer = 'bat',
-        },
-
-        git = {
-          files = { previewer = 'bat' },
-        },
-      }
-
-      fzf.register_ui_select()
-
-      local keymap = vim.keymap.set
-
-      -- Resume last search
-      keymap('n', '<leader>fr', fzf.resume, { desc = '[F]ind [R]esume' })
-
-      -- Grep / Live grep
-      keymap('n', '<leader>ff', function()
-        fzf.live_grep { cwd = require('oil').get_current_dir() }
-      end, { desc = '[F]ind Text in current [D]irectory' })
-
-      keymap('n', '<leader>fF', fzf.live_grep, { desc = '[F]ind text (project-wide)' })
-
-      keymap('v', '<leader>ff', function()
-        require('fzf-lua').grep_visual()
-      end, { desc = '[F]ind text from visual selection' })
-
-      -- LSP symbols
-      keymap('n', '<leader>fs', function()
-        fzf.lsp_document_symbols {
-          symbol_types = { 'Class', 'Function', 'Method', 'Constructor', 'Interface', 'Module', 'Property' },
-        }
-      end, { desc = '[F]ind LSP [S]ymbols' })
-
-      -- Files
-      keymap('n', '<leader>fg', fzf.git_files, { desc = '[F]ind [G]it Files' })
-      keymap('n', '<leader>fD', fzf.files, { desc = '[F]ind All Files (incl. hidden)' })
-      keymap('n', '<leader>fd', function()
-        fzf.files { cwd = require('oil').get_current_dir() }
-      end, { desc = '[F]ind files in current [D]irectory' })
-      keymap('n', '<leader>fR', fzf.oldfiles, { desc = '[F]ind [R]ecent Files' })
-
-      -- Fuzzy search current buffer
-      keymap('n', '/', function()
-        fzf.blines { previewer = false }
-      end, { desc = 'Fuzzily search in current buffer' })
+    'dmtrKovalenko/fff.nvim',
+    build = function()
+      require('fff.download').download_or_build_binary()
     end,
+    lazy = false,
+    opts = {
+      frecency = { enabled = true },
+      layout = {
+        height = 0.8,
+        width = 0.8,
+        preview_position = 'right',
+        preview_size = 0.5,
+      },
+    },
+    keys = {
+      {
+        '<leader>fd',
+        function()
+          local ok, oil = pcall(require, 'oil')
+          local dir = ok and oil.get_current_dir()
+          if dir then
+            require('fff').find_files_in_dir(dir)
+          else
+            require('fff').find_files()
+          end
+        end,
+        desc = '[F]ind files in current dir',
+      },
+      { '<leader>fD', function() require('fff').find_files() end, desc = '[F]ind all files' },
+      { '<leader>ff', function() require('fff').live_grep() end, desc = '[F]ind text' },
+      { '<leader>fF', function() require('fff').live_grep() end, desc = '[F]ind text project-wide' },
+    },
   },
 }

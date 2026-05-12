@@ -32,6 +32,14 @@ npm-debug.log*
 # rust
 target/
 
+# java / jvm
+*.class
+*.jar
+*.war
+*.ear
+.gradle/
+build/
+
 # env / secrets
 .env
 .env.local
