@@ -31,7 +31,6 @@ return {
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs',
     opts = {
       ensure_installed = {
         'nu',
@@ -60,5 +59,21 @@ return {
         disable = { 'ruby', 'python', 'c' },
       },
     },
+    config = function(_, opts)
+      require('nvim-treesitter.configs').setup(opts)
+      -- Neovim 0.12 compat: node:range() can return nil during ranged parses
+      -- (triggered by render-markdown on inline code spans). Wrap with pcall.
+      local aliases = { ex = 'elixir', pl = 'perl', sh = 'bash', ts = 'typescript' }
+      vim.treesitter.query.add_directive('set-lang-from-info-string!', function(match, _, bufnr, pred, metadata)
+        local node = match[pred[2]]
+        if not node then return end
+        local ok, text = pcall(vim.treesitter.get_node_text, node, bufnr)
+        if not ok or not text then return end
+        local alias = text:lower()
+        metadata['injection.language'] = vim.filetype.match({ filename = 'a.' .. alias })
+          or aliases[alias]
+          or alias
+      end, { force = true, all = false })
+    end,
   },
 }
