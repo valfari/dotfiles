@@ -2,7 +2,7 @@ return {
   {
     'RRethy/vim-illuminate',
     opts = {
-      providers = { 'lsp', 'treesitter', 'regex' }, -- Prioritize LSP/Treesitter for accuracy
+      providers = { 'lsp', 'regex' }, -- Prioritize LSP/Treesitter for accuracy
       delay = 20,
       filetypes_denylist = { 'dirvish', 'fugitive', 'NvimTree' },
       under_cursor = true,
@@ -12,9 +12,20 @@ return {
     },
     config = function(_, opts)
       require('illuminate').configure(opts)
-      vim.api.nvim_set_hl(0, 'IlluminatedWordText', { underline = true })
-      vim.api.nvim_set_hl(0, 'IlluminatedWordRead', { underline = true })
-      vim.api.nvim_set_hl(0, 'IlluminatedWordWrite', { underline = true, bold = true })
+      local function set_illuminate_hl()
+        local pairs = {
+          { 'IlluminatedWordText', 'LspReferenceText' },
+          { 'IlluminatedWordRead', 'LspReferenceRead' },
+          { 'IlluminatedWordWrite', 'LspReferenceWrite' },
+        }
+        for _, p in ipairs(pairs) do
+          local hl = vim.api.nvim_get_hl(0, { name = p[2], link = false })
+          hl.underline = true
+          vim.api.nvim_set_hl(0, p[1], hl)
+        end
+      end
+      set_illuminate_hl()
+      vim.api.nvim_create_autocmd('ColorScheme', { callback = set_illuminate_hl })
     end,
   },
   {

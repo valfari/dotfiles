@@ -39,3 +39,5 @@ target/
 
 # tools
 .direnv/
+
+**/.claude/settings.local.json

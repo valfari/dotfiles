@@ -11,7 +11,7 @@ vim.opt.termguicolors = true
 vim.opt.undodir = os.getenv 'HOME' .. '/.cache/nvim/undodir'
 vim.opt.foldlevelstart = 99
 
-vim.o.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions'
+vim.o.sessionoptions = 'blank,buffers,folds,help,tabpages,winsize,winpos,localoptions'
 vim.o.mouse = 'a'
 vim.o.showmode = false
 
