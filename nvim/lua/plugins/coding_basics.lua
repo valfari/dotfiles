@@ -1,5 +1,17 @@
 return {
   {
+    'folke/trouble.nvim',
+    cmd = 'Trouble',
+    opts = {
+      modes = {
+        lsp_references = {
+          auto_close = true,
+          focus = true,
+        },
+      },
+    },
+  },
+  {
     'RRethy/vim-illuminate',
     opts = {
       providers = { 'lsp', 'regex' }, -- Prioritize LSP/Treesitter for accuracy

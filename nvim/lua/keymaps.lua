@@ -41,23 +41,41 @@ vim.cmd('packadd nvim.difftool')
 vim.keymap.set('n', '<leader>u', '<cmd>Undotree<CR>', { desc = 'Toggle Undotree' })
 
 -- COPY PATH
-vim.keymap.set('n', '<leader>y', function()
-  local path
+local function get_current_path(full)
   if vim.bo.filetype == 'oil' then
     local oil = require('oil')
     local entry = oil.get_cursor_entry()
     local dir = oil.get_current_dir()
     if entry and dir then
-      path = dir .. entry.name
+      return full and (dir .. entry.name) or entry.name
     end
   else
-    path = vim.fn.expand('%:p')
+    return full and vim.fn.expand('%:p') or vim.fn.expand('%:t')
   end
+end
+
+vim.keymap.set('n', '<leader>yp', function()
+  local path = get_current_path(true)
   if path and path ~= '' then
     vim.fn.setreg('+', path)
     vim.notify('Copied: ' .. path)
   end
-end, { desc = 'Copy absolute path' })
+end, { desc = 'Yank absolute path' })
+
+vim.keymap.set('n', '<leader>yf', function()
+  local name = get_current_path(false)
+  if name and name ~= '' then
+    vim.fn.setreg('+', name)
+    vim.notify('Copied: ' .. name)
+  end
+end, { desc = 'Yank filename' })
+
+vim.keymap.set('n', '<leader>ya', function()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local content = table.concat(lines, '\n')
+  vim.fn.setreg('+', content)
+  vim.notify('Copied buffer contents')
+end, { desc = 'Yank all buffer contents' })
 
 -- EXECUTE COMMANDS
 vim.keymap.set('v', '<leader>el', ':lua<CR>', { desc = '[E]xecute [L]ua' })
@@ -76,10 +94,37 @@ local themes = {
   { scheme = 'onedark', bg = 'dark', label = 'onedark' },
 }
 local current_theme_index = 1
+
+local theme_state_file = vim.fn.stdpath('data') .. '/theme_per_cwd.json'
+
+local function save_theme_for_cwd()
+  local ok, data = pcall(function()
+    return vim.json.decode(table.concat(vim.fn.readfile(theme_state_file), ''))
+  end)
+  local map = (ok and type(data) == 'table') and data or {}
+  map[vim.fn.getcwd()] = current_theme_index
+  vim.fn.writefile({ vim.json.encode(map) }, theme_state_file)
+end
+
+local function restore_theme_for_cwd()
+  local ok, data = pcall(function()
+    return vim.json.decode(table.concat(vim.fn.readfile(theme_state_file), ''))
+  end)
+  if not ok or type(data) ~= 'table' then return end
+  local idx = data[vim.fn.getcwd()]
+  if idx and themes[idx] then
+    current_theme_index = idx
+    local t = themes[idx]
+    vim.o.background = t.bg
+    vim.cmd.colorscheme(t.scheme)
+  end
+end
+
 local function apply_theme(t)
   vim.o.background = t.bg
   vim.cmd.colorscheme(t.scheme)
   print('Switched to ' .. t.label)
+  save_theme_for_cwd()
 end
 _G._theme_toggle_next = function()
   current_theme_index = current_theme_index % #themes + 1
@@ -97,6 +142,11 @@ vim.keymap.set('n', '<leader>tY', function()
   vim.go.operatorfunc = 'v:lua._theme_toggle_prev'
   return 'g@l'
 end, { expr = true, desc = 'Toggle theme prev' })
+
+vim.api.nvim_create_autocmd('VimEnter', {
+  once = true,
+  callback = restore_theme_for_cwd,
+})
 
 -- DIFF ALGORITHM TOGGLE
 local diff_algorithms = { 'myers', 'patience', 'histogram' }

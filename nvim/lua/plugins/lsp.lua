@@ -132,7 +132,23 @@ return {
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, vim.tbl_extend('force', bufopts, { desc = 'Goto Declaration' }))
           vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, vim.tbl_extend('force', bufopts, { desc = 'Goto Type Definition' }))
           vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, vim.tbl_extend('force', bufopts, { desc = 'Goto Implementation' }))
-          vim.keymap.set('n', 'gr', vim.lsp.buf.references, vim.tbl_extend('force', bufopts, { desc = 'Goto References' }))
+          vim.keymap.set('n', 'gr', function()
+            vim.lsp.buf.references(nil, {
+              on_list = function(options)
+                vim.fn.setqflist({}, ' ', options)
+                vim.cmd('botright copen')
+                local qf_bufnr = vim.fn.getqflist({ qfbufnr = 0 }).qfbufnr
+                vim.api.nvim_create_autocmd('CursorMoved', {
+                  buffer = qf_bufnr,
+                  callback = function()
+                    local qf_win = vim.api.nvim_get_current_win()
+                    vim.cmd('silent ' .. vim.fn.line('.') .. 'cc')
+                    vim.api.nvim_set_current_win(qf_win)
+                  end,
+                })
+              end,
+            })
+          end, vim.tbl_extend('force', bufopts, { desc = 'Goto References' }))
           vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, vim.tbl_extend('force', bufopts, { desc = 'Code Action' }))
           vim.keymap.set('n', '<leader>rnn', vim.lsp.buf.rename, vim.tbl_extend('force', bufopts, { desc = 'Rename' }))
           vim.keymap.set('n', 'gp', function()
