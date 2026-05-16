@@ -25,8 +25,8 @@ return {
       },
     },
   },
-  { 'NMAC427/guess-indent.nvim' },
-  { 'matze/vim-move' },
+  { 'NMAC427/guess-indent.nvim', enabled = false },
+  { 'matze/vim-move', enabled = false },
   { 'mg979/vim-visual-multi' },
   {
     'kylechui/nvim-surround',

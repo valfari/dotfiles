@@ -38,7 +38,7 @@ return {
   { 'dstein64/nvim-scrollview' },
   {
     'sphamba/smear-cursor.nvim',
-    enabled = true,
+    enabled = false,
     event = 'VeryLazy',
     cond = vim.g.neovide == nil,
     opts = {
@@ -60,6 +60,7 @@ return {
   },
   {
     'folke/todo-comments.nvim',
+    enabled = false,
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {},
   },
@@ -70,7 +71,7 @@ return {
   { 'akinsho/toggleterm.nvim', version = '*', config = true },
   {
     'karb94/neoscroll.nvim',
-    enabled = true,
+    enabled = false,
     opts = {
       easing = 'quadratic',
     },
