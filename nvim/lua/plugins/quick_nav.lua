@@ -14,7 +14,7 @@ return {
       exclude_ft = { 'javascript' },
       exclude_name = { 'package.json' },
       focus_on_close = 'left',
-      hide = { extensions = true, inactive = true },
+      hide = { extensions = true },
       highlight_alternate = false,
       highlight_inactive_file_icons = false,
       highlight_visible = true,

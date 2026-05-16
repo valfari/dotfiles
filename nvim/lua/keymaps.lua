@@ -165,3 +165,13 @@ vim.keymap.set('n', '<leader>dt', function()
   vim.go.operatorfunc = 'v:lua._diff_algo_toggle'
   return 'g@l'
 end, { expr = true, desc = '[D]iff algorithm [T]oggle' })
+
+-- MOVE TO PROJECT ROOT
+vim.keymap.set('n', '<leader>mp', function()
+  local root = vim.fs.root(0, { '.git', 'Cargo.toml', 'pyproject.toml', 'package.json', 'go.mod' })
+  if root then
+    require('oil').open(root)
+  else
+    vim.notify('No project root found', vim.log.levels.WARN)
+  end
+end, { desc = '[M]ove to [P]roject root' })

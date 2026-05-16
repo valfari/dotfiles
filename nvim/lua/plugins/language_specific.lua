@@ -32,11 +32,22 @@ return {
     ft = { 'scala', 'sbt', 'java' },
     opts = function()
       local metals_config = require('metals').bare_config()
-      metals_config.on_attach = function(client, bufnr)
-        -- your on_attach function
-      end
+
+      -- nvim-metals bypasses vim.lsp.config('*',...) so capabilities must be
+      -- set directly here or blink.cmp completion won't work with metals
+      metals_config.capabilities = require('blink.cmp').get_lsp_capabilities()
+
+      -- routes build status through window/showMessage → fidget.nvim picks it up
+      metals_config.init_options = { statusBarProvider = 'on' }
+
       metals_config.settings = {
         showUnusedImports = true,
+        showInferredType = true,
+        showImplicitArguments = true,
+        showImplicitConversionsAndClasses = true,
+        enableSemanticHighlighting = true,
+        superMethodLensesEnabled = true,
+        testUserInterface = 'Code Lenses',
       }
 
       return metals_config

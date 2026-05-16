@@ -20,32 +20,58 @@ local process_icons = {
 }
 
 -- Tab colors (cycled per-tab with PageUp/PageDown)
--- active_accent_colors: bright, used for the currently active tab in the tab bar
--- accent_colors: dimmed, used for inactive tabs in the tab bar
--- themes: full color scheme applied to all panes in the tab
-local active_accent_colors = {
-	"#2e4379", -- blue (default)
-	"#779b50", -- green
-	"#a8834e", -- orange
-	"#b9596b", -- red
-	"#8c74b9", -- purple
-	"#5e9bbf", -- cyan
-}
-local accent_colors = {
-	"#2c4172", -- blue (default)
-	"#4d7a34", -- green
-	"#7a5e2e", -- orange
-	"#7a3344", -- red
-	"#5a4280", -- purple
-	"#2e6680", -- cyan
-}
+-- Each entry is a full theme: color scheme + tab bar palette + accent color
 local themes = {
-	{ scheme = "Tokyo Night Storm",      branch_fg = "#7aa2f7", time_fg = "#565f89" },
-	{ scheme = "Everforest Dark (Gogh)", branch_fg = "#a7c080", time_fg = "#7a8478" },
-	{ scheme = "GruvboxDark",            branch_fg = "#fabd2f", time_fg = "#928374" },
-	{ scheme = "rose-pine",              branch_fg = "#ebbcba", time_fg = "#6e6a86" },
-	{ scheme = "Dracula",                branch_fg = "#ff79c6", time_fg = "#6272a4" },
-	{ scheme = "nord",                   branch_fg = "#88c0d0", time_fg = "#4c566a" },
+	{
+		scheme = "GruvboxDark",
+		accent = "#504945",
+		tab_bar_bg = "#282828",
+		hover_bg = "#3c3836",
+		active_fg = "#ebdbb2",
+		inactive_fg = "#928374",
+		branch_fg = "#fabd2f",
+		time_fg = "#928374",
+	},
+	{
+		scheme = "Everforest Dark (Gogh)",
+		accent = "#4a5e44",
+		tab_bar_bg = "#2d353b",
+		hover_bg = "#3d4f47",
+		active_fg = "#d3c6aa",
+		inactive_fg = "#7a8478",
+		branch_fg = "#a7c080",
+		time_fg = "#7a8478",
+	},
+	{
+		scheme = "Catppuccin Frappe",
+		accent = "#414559",
+		tab_bar_bg = "#303446",
+		hover_bg = "#51576d",
+		active_fg = "#c6d0f5",
+		inactive_fg = "#737994",
+		branch_fg = "#8caaee",
+		time_fg = "#737994",
+	},
+	{
+		scheme = "Tokyo Night Storm",
+		accent = "#2e4379",
+		tab_bar_bg = "#1f2335",
+		hover_bg = "#2d3f76",
+		active_fg = "#c0caf5",
+		inactive_fg = "#565f89",
+		branch_fg = "#7aa2f7",
+		time_fg = "#565f89",
+	},
+	{
+		scheme = "Kanagawa (Gogh)",
+		accent = "#2d4f67",
+		tab_bar_bg = "#1f1f28",
+		hover_bg = "#2d4f67",
+		active_fg = "#dcd7ba",
+		inactive_fg = "#727169",
+		branch_fg = "#7e9cd8",
+		time_fg = "#727169",
+	},
 }
 local tab_colors = {}
 local last_applied = {} -- [win_id] = idx last passed to apply_tab_color
@@ -57,14 +83,13 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 	local cwd = pane.current_working_dir
 	local dir = cwd and cwd.file_path:match("([^/]+)$") or "~"
 
-	-- Tokyo Night Storm palette
-	local tab_bar_bg = "#1f2335"
-	local idx = tab_colors[tab.tab_id] or 1
-	local active_fg = "#c0caf5"
-	local inactive_fg = "#565f89"
-	local hover_bg = "#2d3f76"
+	local theme = themes[tab_colors[tab.tab_id] or 1]
+	local tab_bar_bg = theme.tab_bar_bg
+	local active_fg = theme.active_fg
+	local inactive_fg = theme.inactive_fg
+	local hover_bg = theme.hover_bg
 
-	local bg = hover and hover_bg or active_accent_colors[idx]
+	local bg = hover and hover_bg or theme.accent
 	local fg = tab.is_active and active_fg or inactive_fg
 
 	local idx = tab.tab_index + 1
@@ -82,13 +107,14 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 end)
 
 local function apply_tab_color(window, idx)
+	local t = themes[idx]
 	window:set_config_overrides({
-		color_scheme = themes[idx].scheme,
+		color_scheme = t.scheme,
 		colors = {
 			tab_bar = {
-				background = "#1f2335",
-				new_tab = { bg_color = "#1f2335", fg_color = "#565f89" },
-				new_tab_hover = { bg_color = "#2d3f76", fg_color = "#c0caf5" },
+				background = t.tab_bar_bg,
+				new_tab = { bg_color = t.tab_bar_bg, fg_color = t.inactive_fg },
+				new_tab_hover = { bg_color = t.hover_bg, fg_color = t.active_fg },
 			},
 		},
 	})
@@ -107,21 +133,21 @@ end)
 
 wezterm.on("cycle-tab-color-next", function(window, _)
 	local id = window:active_tab():tab_id()
-	local idx = (tab_colors[id] or 1) % #accent_colors + 1
+	local idx = (tab_colors[id] or 1) % #themes + 1
 	tab_colors[id] = idx
 	apply_tab_color(window, idx)
 end)
 
 wezterm.on("cycle-tab-color-prev", function(window, _)
 	local id = window:active_tab():tab_id()
-	local idx = ((tab_colors[id] or 1) - 2) % #accent_colors + 1
+	local idx = ((tab_colors[id] or 1) - 2) % #themes + 1
 	tab_colors[id] = idx
 	apply_tab_color(window, idx)
 end)
 
 return {
 	adjust_window_size_when_changing_font_size = false,
-	font = wezterm.font_with_fallback(fonts.getFonts("fira")),
+	font = wezterm.font_with_fallback(fonts.getFonts("victor")),
 	-- Copy & Paste Right Click
 
 	mouse_bindings = {
@@ -142,7 +168,7 @@ return {
 	-- OpenGL for GPU acceleration, Software for CPU
 	front_end = "OpenGL",
 	color_scheme_dirs = { home .. "/.cache/wal" },
-	color_scheme = "Tokyo Night Storm",
+	color_scheme = "GruvboxDark",
 
 	-- Font config
 	warn_about_missing_glyphs = false,
@@ -281,9 +307,9 @@ return {
 	tab_max_width = 85,
 	colors = {
 		tab_bar = {
-			background = "#1f2335",
-			new_tab = { bg_color = "#1f2335", fg_color = "#565f89" },
-			new_tab_hover = { bg_color = "#2d3f76", fg_color = "#c0caf5" },
+			background = "#282828",
+			new_tab = { bg_color = "#282828", fg_color = "#928374" },
+			new_tab_hover = { bg_color = "#3c3836", fg_color = "#ebdbb2" },
 		},
 	},
 	-- General

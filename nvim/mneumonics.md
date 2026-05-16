@@ -1,4 +1,4 @@
-# mneumonics
+# mneu1nics
 
 
 ## Launch

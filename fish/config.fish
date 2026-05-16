@@ -7,6 +7,12 @@ set -gx MANPAGER 'nvim +Man!'
 fish_add_path /opt/homebrew/bin
 fish_add_path /opt/homebrew/sbin
 
+# Coursier (Scala tooling: metals, bloop, cs)
+fish_add_path "/Users/vustimenko/Library/Application Support/Coursier/bin"
+
+# uv tools (serena, etc.)
+fish_add_path ~/.local/bin
+
 # Java (Homebrew openjdk)
 fish_add_path /opt/homebrew/opt/openjdk@21/bin
 fish_add_path /opt/homebrew/opt/openjdk@17/bin
