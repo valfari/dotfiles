@@ -66,9 +66,10 @@ return {
   },
   {
     'nvim-lualine/lualine.nvim',
+    enabled = false,
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
-  { 'akinsho/toggleterm.nvim', version = '*', config = true },
+  { 'akinsho/toggleterm.nvim', enabled = false, version = '*', config = true },
   {
     'karb94/neoscroll.nvim',
     enabled = false,
