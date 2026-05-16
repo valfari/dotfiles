@@ -15,6 +15,12 @@ vim.keymap.set('n', '<A-j>', '<cmd>resize -10<CR>', { desc = 'Decrease window he
 vim.keymap.set('n', '<A-l>', '<cmd>vertical resize +10<CR>', { desc = 'Increase window width' })
 vim.keymap.set('n', '<A-h>', '<cmd>vertical resize -10<CR>', { desc = 'Decrease window width' })
 
+-- LINE MOVE
+vim.keymap.set('n', '<A-Down>', '<cmd>move .+1<CR>==',        { desc = 'Move line down' })
+vim.keymap.set('n', '<A-Up>',   '<cmd>move .-2<CR>==',        { desc = 'Move line up' })
+vim.keymap.set('x', '<A-Down>', ":move '>+1<CR>gv=gv",        { desc = 'Move selection down' })
+vim.keymap.set('x', '<A-Up>',   ":move '<-2<CR>gv=gv",        { desc = 'Move selection up' })
+
 -- COMMENT (native Neovim 0.10+ gc/gb operators)
 vim.keymap.set({ 'n', 'x' }, '<leader>tcl', 'gc', { remap = true, desc = '[T]oggle [C]omment [L]ine' })
 vim.keymap.set({ 'n', 'x' }, '<leader>tcb', 'gb', { remap = true, desc = '[T]oggle [C]omment [B]lock' })
@@ -84,14 +90,11 @@ vim.keymap.set('v', '<leader>el', ':lua<CR>', { desc = '[E]xecute [L]ua' })
 
 local themes = {
   { scheme = 'gruvbox', bg = 'dark', label = 'gruvbox dark' },
-  { scheme = 'gruvbox', bg = 'light', label = 'gruvbox light' },
+
   { scheme = 'everforest', bg = 'dark', label = 'everforest' },
   { scheme = 'catppuccin-frappe', bg = 'dark', label = 'catppuccin-frappe' },
   { scheme = 'tokyonight-night', bg = 'dark', label = 'tokyonight-night' },
   { scheme = 'kanagawa-wave', bg = 'dark', label = 'kanagawa-wave' },
-  { scheme = 'rose-pine', bg = 'dark', label = 'rose-pine' },
-  { scheme = 'nightfox', bg = 'dark', label = 'nightfox' },
-  { scheme = 'onedark', bg = 'dark', label = 'onedark' },
 }
 local current_theme_index = 1
 

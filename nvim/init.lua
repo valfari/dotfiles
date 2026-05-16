@@ -23,9 +23,9 @@ require('lazy').setup({
   },
   { 'folke/tokyonight.nvim', priority = 1000, opts = { style = 'night' } },
   { 'rebelot/kanagawa.nvim', priority = 1000, opts = {} },
-  { 'rose-pine/neovim', name = 'rose-pine', priority = 1000, opts = {} },
-  { 'EdenEast/nightfox.nvim', priority = 1000, opts = {} },
-  { 'navarasu/onedark.nvim', priority = 1000, opts = {} },
+  { 'rose-pine/neovim', name = 'rose-pine', enabled = false, priority = 1000, opts = {} },
+  { 'EdenEast/nightfox.nvim', enabled = false, priority = 1000, opts = {} },
+  { 'navarasu/onedark.nvim', enabled = false, priority = 1000, opts = {} },
   { import = 'plugins' },
 }, {
   ui = {
@@ -53,5 +53,5 @@ vim.cmd.colorscheme 'gruvbox'
 
 require 'keymaps'
 
-require('lualine').setup()
+require('statusline')
 require 'spell'

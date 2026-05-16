@@ -11,6 +11,7 @@ return {
   },
   {
     'lervag/vimtex',
+    enabled = false,
     ft = { 'tex', 'latex', 'plaintex' },
     init = function()
       -- Basic config goes here (see below)

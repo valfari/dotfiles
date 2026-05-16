@@ -27,7 +27,7 @@ return {
   },
   { 'NMAC427/guess-indent.nvim', enabled = false },
   { 'matze/vim-move', enabled = false },
-  { 'mg979/vim-visual-multi' },
+  { 'mg979/vim-visual-multi', enabled = false },
   {
     'kylechui/nvim-surround',
     version = '^3.0.0',
