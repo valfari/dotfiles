@@ -32,6 +32,9 @@ return {
       metals_config.on_attach = function(client, bufnr)
         -- your on_attach function
       end
+      metals_config.settings = {
+        showUnusedImports = true,
+      }
 
       return metals_config
     end,

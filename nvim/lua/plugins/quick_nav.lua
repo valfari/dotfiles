@@ -93,6 +93,7 @@ return {
     ---@type Flash.Config
     opts = {
       modes = {
+        search = { enabled = false },
         treesitter = {
           label = { rainbow = { enabled = true } },
         },
@@ -158,7 +159,17 @@ return {
       },
       { '<leader>fD', function() require('fff').find_files() end, desc = '[F]ind all files' },
       { '<leader>ff', function() require('fff').live_grep() end, desc = '[F]ind text' },
-      { '<leader>fF', function() require('fff').live_grep() end, desc = '[F]ind text project-wide' },
+      {
+        '<leader>fF',
+        mode = { 'x' },
+        function()
+          local s = vim.fn.getpos("'<")
+          local e = vim.fn.getpos("'>")
+          local lines = vim.fn.getregion(s, e, { mode = 'v' })
+          require('fff').live_grep({ query = table.concat(lines, ' ') })
+        end,
+        desc = '[F]ind selection',
+      },
     },
   },
 }
