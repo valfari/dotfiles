@@ -6,8 +6,8 @@ vim.opt.spelllang = 'en_gb'
 
 vim.keymap.set('n', '<leader>ts', function()
   vim.opt.spell = not vim.opt.spell:get()
-  print('Spell check: ' .. (vim.opt.spell:get() and 'enabled' or 'disabled'))
-end, { desc = '[T]oggle [S]pell check' })
+  vim.notify('Spell check: ' .. (vim.opt.spell:get() and 'enabled' or 'disabled'))
+end, { desc = '[S]pell [C]heck' })
 
 -- Enable only for specific filetypes via autocmd
 -- vim.api.nvim_create_autocmd('FileType', {

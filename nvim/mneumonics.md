@@ -9,9 +9,6 @@ Things to launch:
 - <leader>lg
 Launch lazygit
 
-- <leader>lr 
-Launch replace
-
 - <leader>
 
 ## Toggle
@@ -19,17 +16,23 @@ Launch replace
 These are the things that you toggle, where pressing the same key changes the state of the editor
 Things to toggle:
 
-- <leader>ty
-Toggle theme
+- <leader>tu
+UI theme (cycles through theme list)
 
-- <leader>tcb
-Toggle comment block
+- <leader>tc
+Comment type (cycles line ↔ block; acts as operator, needs motion)
 
-- <leader>tcl
-Toggle comment line
+- <leader>tg
+Git blame (inline current-line blame)
 
-- <leader>tl
-Toggle how diagnostic lines are shown by lsps
+- <leader>td
+Diff word-level (gitsigns word diff)
+
+- <leader>ts
+Spell check
+
+- <leader>tv
+Virtual lines (diagnostic display: virtual text ↔ virtual lines)
 
 
 

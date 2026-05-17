@@ -7,6 +7,16 @@ return {
   {
     'folke/which-key.nvim',
     event = 'VeryLazy',
+    opts = {
+      spec = {
+        { '<leader>t', group = 'Toggle' },
+        { '<leader>y', group = 'Yank' },
+        { '<leader>d', group = 'Diff' },
+        { '<leader>r', group = 'Replace' },
+        { '<leader>f', group = 'Find' },
+        { '<leader>m', group = 'Move' },
+      },
+    },
     keys = {
       {
         '<leader>?',

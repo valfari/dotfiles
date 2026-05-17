@@ -140,27 +140,30 @@ return {
             vim.lsp.buf.references(nil, {
               on_list = function(options)
                 vim.fn.setqflist({}, ' ', options)
-                vim.cmd('botright copen')
+                vim.cmd 'botright copen'
                 local qf_bufnr = vim.fn.getqflist({ qfbufnr = 0 }).qfbufnr
                 vim.api.nvim_create_autocmd('CursorMoved', {
                   buffer = qf_bufnr,
                   callback = function()
                     local qf_win = vim.api.nvim_get_current_win()
-                    vim.cmd('silent ' .. vim.fn.line('.') .. 'cc')
+                    vim.cmd('silent ' .. vim.fn.line '.' .. 'cc')
                     vim.api.nvim_set_current_win(qf_win)
                   end,
                 })
               end,
             })
           end, vim.tbl_extend('force', bufopts, { desc = 'Goto References' }))
-          vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, vim.tbl_extend('force', bufopts, { desc = 'Code Action' }))
           vim.keymap.set('n', '<leader>rnn', vim.lsp.buf.rename, vim.tbl_extend('force', bufopts, { desc = 'Rename' }))
           vim.keymap.set('n', 'gp', function()
             vim.cmd 'split'
             vim.lsp.buf.definition()
           end, vim.tbl_extend('force', bufopts, { desc = 'Peek Definition (split)' }))
-          vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1, float = true } end, vim.tbl_extend('force', bufopts, { desc = 'Prev Diagnostic' }))
-          vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = true } end, vim.tbl_extend('force', bufopts, { desc = 'Next Diagnostic' }))
+          vim.keymap.set('n', '[d', function()
+            vim.diagnostic.jump { count = -1, float = true }
+          end, vim.tbl_extend('force', bufopts, { desc = 'Prev Diagnostic' }))
+          vim.keymap.set('n', ']d', function()
+            vim.diagnostic.jump { count = 1, float = true }
+          end, vim.tbl_extend('force', bufopts, { desc = 'Next Diagnostic' }))
           vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = 'Signature Help' })
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, vim.tbl_extend('force', bufopts, { desc = 'Hover Documentation' }))
 
@@ -185,14 +188,16 @@ return {
 
       vim.diagnostic.config { virtual_text = { current_line = true }, virtual_lines = false }
 
-      vim.keymap.set('', '<leader>tl', function()
+      vim.keymap.set('', '<leader>tv', function()
         local config = vim.diagnostic.config() or {}
         if config.virtual_text then
           vim.diagnostic.config { virtual_text = false, virtual_lines = true }
+          vim.notify 'Diagnostics: virtual lines'
         else
           vim.diagnostic.config { virtual_text = { current_line = true }, virtual_lines = false }
+          vim.notify 'Diagnostics: virtual text'
         end
-      end, { desc = 'Toggle lsp_lines' })
+      end, { desc = '[V]irtual [L]ines' })
     end,
   },
   {

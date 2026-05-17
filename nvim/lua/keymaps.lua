@@ -16,14 +16,18 @@ vim.keymap.set('n', '<A-l>', '<cmd>vertical resize +10<CR>', { desc = 'Increase 
 vim.keymap.set('n', '<A-h>', '<cmd>vertical resize -10<CR>', { desc = 'Decrease window width' })
 
 -- LINE MOVE
-vim.keymap.set('n', '<A-Down>', '<cmd>move .+1<CR>==',        { desc = 'Move line down' })
-vim.keymap.set('n', '<A-Up>',   '<cmd>move .-2<CR>==',        { desc = 'Move line up' })
-vim.keymap.set('x', '<A-Down>', ":move '>+1<CR>gv=gv",        { desc = 'Move selection down' })
-vim.keymap.set('x', '<A-Up>',   ":move '<-2<CR>gv=gv",        { desc = 'Move selection up' })
+vim.keymap.set('n', '<A-Down>', '<cmd>move .+1<CR>==', { desc = 'Move line down' })
+vim.keymap.set('n', '<A-Up>', '<cmd>move .-2<CR>==', { desc = 'Move line up' })
+vim.keymap.set('x', '<A-Down>', ":move '>+1<CR>gv=gv", { desc = 'Move selection down' })
+vim.keymap.set('x', '<A-Up>', ":move '<-2<CR>gv=gv", { desc = 'Move selection up' })
 
 -- COMMENT (native Neovim 0.10+ gc/gb operators)
-vim.keymap.set({ 'n', 'x' }, '<leader>tcl', 'gc', { remap = true, desc = '[T]oggle [C]omment [L]ine' })
-vim.keymap.set({ 'n', 'x' }, '<leader>tcb', 'gb', { remap = true, desc = '[T]oggle [C]omment [B]lock' })
+local _comment_type = 'block'
+vim.keymap.set({ 'n', 'x' }, '<leader>tc', function()
+  _comment_type = _comment_type == 'line' and 'block' or 'line'
+  vim.notify('Comment type: ' .. _comment_type)
+  return _comment_type == 'line' and 'gc' or 'gb'
+end, { expr = true, remap = true, desc = '[C]omment [T]ype' })
 
 -- DIFF VS CLIPBOARD
 vim.keymap.set('n', '<leader>dc', function()
@@ -40,23 +44,23 @@ vim.keymap.set('n', '<leader>dc', function()
   vim.cmd 'diffthis'
   vim.cmd 'wincmd p'
   vim.cmd 'diffthis'
-end, { desc = 'Diff vs clipboard' })
+end, { desc = '[D]iff vs [C]lipboard' })
 
-vim.cmd('packadd nvim.undotree')
-vim.cmd('packadd nvim.difftool')
+vim.cmd 'packadd nvim.undotree'
+vim.cmd 'packadd nvim.difftool'
 vim.keymap.set('n', '<leader>u', '<cmd>Undotree<CR>', { desc = 'Toggle Undotree' })
 
 -- COPY PATH
 local function get_current_path(full)
   if vim.bo.filetype == 'oil' then
-    local oil = require('oil')
+    local oil = require 'oil'
     local entry = oil.get_cursor_entry()
     local dir = oil.get_current_dir()
     if entry and dir then
       return full and (dir .. entry.name) or entry.name
     end
   else
-    return full and vim.fn.expand('%:p') or vim.fn.expand('%:t')
+    return full and vim.fn.expand '%:p' or vim.fn.expand '%:t'
   end
 end
 
@@ -66,7 +70,7 @@ vim.keymap.set('n', '<leader>yp', function()
     vim.fn.setreg('+', path)
     vim.notify('Copied: ' .. path)
   end
-end, { desc = 'Yank absolute path' })
+end, { desc = '[Y]ank [P]ath' })
 
 vim.keymap.set('n', '<leader>yf', function()
   local name = get_current_path(false)
@@ -74,14 +78,14 @@ vim.keymap.set('n', '<leader>yf', function()
     vim.fn.setreg('+', name)
     vim.notify('Copied: ' .. name)
   end
-end, { desc = 'Yank filename' })
+end, { desc = '[Y]ank [F]ilename' })
 
 vim.keymap.set('n', '<leader>ya', function()
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local content = table.concat(lines, '\n')
   vim.fn.setreg('+', content)
-  vim.notify('Copied buffer contents')
-end, { desc = 'Yank all buffer contents' })
+  vim.notify 'Copied buffer contents'
+end, { desc = '[Y]ank [A]ll' })
 
 -- EXECUTE COMMANDS
 vim.keymap.set('v', '<leader>el', ':lua<CR>', { desc = '[E]xecute [L]ua' })
@@ -98,7 +102,7 @@ local themes = {
 }
 local current_theme_index = 1
 
-local theme_state_file = vim.fn.stdpath('data') .. '/theme_per_cwd.json'
+local theme_state_file = vim.fn.stdpath 'data' .. '/theme_per_cwd.json'
 
 local function save_theme_for_cwd()
   local ok, data = pcall(function()
@@ -113,7 +117,9 @@ local function restore_theme_for_cwd()
   local ok, data = pcall(function()
     return vim.json.decode(table.concat(vim.fn.readfile(theme_state_file), ''))
   end)
-  if not ok or type(data) ~= 'table' then return end
+  if not ok or type(data) ~= 'table' then
+    return
+  end
   local idx = data[vim.fn.getcwd()]
   if idx and themes[idx] then
     current_theme_index = idx
@@ -137,14 +143,10 @@ _G._theme_toggle_prev = function()
   current_theme_index = (current_theme_index - 2) % #themes + 1
   apply_theme(themes[current_theme_index])
 end
-vim.keymap.set('n', '<leader>ty', function()
+vim.keymap.set('n', '<leader>tu', function()
   vim.go.operatorfunc = 'v:lua._theme_toggle_next'
   return 'g@l'
-end, { expr = true, desc = 'Toggle theme next' })
-vim.keymap.set('n', '<leader>tY', function()
-  vim.go.operatorfunc = 'v:lua._theme_toggle_prev'
-  return 'g@l'
-end, { expr = true, desc = 'Toggle theme prev' })
+end, { expr = true, desc = '[UI] theme' })
 
 vim.api.nvim_create_autocmd('VimEnter', {
   once = true,
@@ -157,7 +159,9 @@ local diff_algo_index = 3 -- start at histogram
 _G._diff_algo_toggle = function()
   diff_algo_index = diff_algo_index % #diff_algorithms + 1
   local algo = diff_algorithms[diff_algo_index]
-  vim.opt.diffopt:remove(vim.tbl_map(function(a) return 'algorithm:' .. a end, diff_algorithms))
+  vim.opt.diffopt:remove(vim.tbl_map(function(a)
+    return 'algorithm:' .. a
+  end, diff_algorithms))
   vim.opt.diffopt:append('algorithm:' .. algo)
   vim.notify('Diff algorithm: ' .. algo)
 end

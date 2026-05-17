@@ -4,42 +4,42 @@ return {
     opts = {},
     keys = {
       {
-        '<leader>lr',
+        '<leader>rr',
         function() require('grug-far').open({ transient = true }) end,
         mode = { 'n' },
-        desc = '[L]aunch find and [R]eplace',
+        desc = '[R]eplace',
       },
       {
-        '<leader>lr',
+        '<leader>rr',
         function() require('grug-far').with_visual_selection({ transient = true }) end,
         mode = { 'v' },
-        desc = '[L]aunch find and [R]eplace (selection)',
+        desc = '[R]eplace (selection)',
       },
       {
-        '<leader>lw',
+        '<leader>rw',
         function()
           require('grug-far').open({ prefills = { search = vim.fn.expand '<cword>' } })
         end,
-        desc = '[L]aunch replace [W]ord under cursor',
+        desc = '[R]eplace [W]ord under cursor',
       },
       {
-        '<leader>lf',
+        '<leader>rf',
         function()
           require('grug-far').open({ prefills = { paths = vim.fn.expand '%' } })
         end,
-        desc = '[L]aunch replace in current [F]ile',
+        desc = '[R]eplace in [F]ile',
       },
       {
-        '<leader>ld',
+        '<leader>rd',
         function()
           local ok, oil = pcall(require, 'oil')
           local dir = ok and oil.get_current_dir() or vim.fn.expand '%:p:h'
           require('grug-far').open({ prefills = { paths = dir } })
         end,
-        desc = '[L]aunch replace in current [D]irectory',
+        desc = '[R]eplace in [D]irectory',
       },
       {
-        '<leader>lb',
+        '<leader>rb',
         function()
           local bufs = vim.tbl_filter(function(b)
             return vim.bo[b].buflisted and vim.api.nvim_buf_get_name(b) ~= ''
@@ -47,7 +47,7 @@ return {
           local paths = table.concat(vim.tbl_map(vim.api.nvim_buf_get_name, bufs), ' ')
           require('grug-far').open({ prefills = { paths = paths } })
         end,
-        desc = '[L]aunch replace in open [B]uffers',
+        desc = '[R]eplace in [B]uffers',
       },
     },
   },

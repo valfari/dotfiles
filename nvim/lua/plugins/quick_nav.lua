@@ -155,12 +155,12 @@ return {
             require('fff').find_files()
           end
         end,
-        desc = '[F]ind files in current dir',
+        desc = '[F]ind in [D]ir',
       },
-      { '<leader>fD', function() require('fff').find_files() end, desc = '[F]ind all files' },
-      { '<leader>ff', function() require('fff').live_grep() end, desc = '[F]ind text' },
+      { '<leader>fD', function() require('fff').find_files() end, desc = '[F]ind in all [D]irs' },
+      { '<leader>ff', function() require('fff').live_grep() end, desc = '[F]ind' },
       {
-        '<leader>fF',
+        '<leader>fs',
         mode = { 'x' },
         function()
           local s = vim.fn.getpos("'<")
@@ -168,7 +168,7 @@ return {
           local lines = vim.fn.getregion(s, e, { mode = 'v' })
           require('fff').live_grep({ query = table.concat(lines, ' ') })
         end,
-        desc = '[F]ind selection',
+        desc = '[F]ind [S]election',
       },
     },
   },
