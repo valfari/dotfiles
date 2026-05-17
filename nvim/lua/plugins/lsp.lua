@@ -132,6 +132,17 @@ return {
 
           vim.opt_local.omnifunc = 'v:lua.vim.lsp.omnifunc'
           local bufopts = { buffer = 0 }
+
+          -- Remove Neovim 0.11 built-in LSP defaults (scheduled so they run after
+          -- Neovim's own LspAttach handler has finished setting them)
+          vim.schedule(function()
+            pcall(vim.keymap.del, 'n',          'grn', { buffer = bufnr })
+            pcall(vim.keymap.del, { 'n', 'x' }, 'gra', { buffer = bufnr })
+            pcall(vim.keymap.del, 'n',          'grr', { buffer = bufnr })
+            pcall(vim.keymap.del, 'n',          'gri', { buffer = bufnr })
+            pcall(vim.keymap.del, 'n',          'gO',  { buffer = bufnr })
+          end)
+
           vim.keymap.set('n', '<leader>md', vim.lsp.buf.definition, vim.tbl_extend('force', bufopts, { desc = '[M]ove to [D]efinition' }))
           vim.keymap.set('n', '<leader>mD', vim.lsp.buf.declaration, vim.tbl_extend('force', bufopts, { desc = '[M]ove to [D]eclaration' }))
           vim.keymap.set('n', '<leader>mt', vim.lsp.buf.type_definition, vim.tbl_extend('force', bufopts, { desc = '[M]ove to [T]ype' }))
@@ -153,7 +164,9 @@ return {
               end,
             })
           end, vim.tbl_extend('force', bufopts, { desc = '[S]how [R]eferences' }))
-          vim.keymap.set('n', '<leader>rnn', vim.lsp.buf.rename, vim.tbl_extend('force', bufopts, { desc = 'Rename' }))
+          vim.keymap.set('n', '<leader>rl', vim.lsp.buf.rename, vim.tbl_extend('force', bufopts, { desc = '[R]ename [L]SP symbol' }))
+          vim.keymap.set('n', '<leader>ss', vim.lsp.buf.document_symbol, vim.tbl_extend('force', bufopts, { desc = '[S]how [S]ymbols' }))
+          vim.keymap.set({ 'n', 'v' }, '<leader>sa', vim.lsp.buf.code_action, vim.tbl_extend('force', bufopts, { desc = '[S]how [A]ctions' }))
           vim.keymap.set('n', '[d', function()
             vim.diagnostic.jump { count = -1, float = true }
           end, vim.tbl_extend('force', bufopts, { desc = 'Prev Diagnostic' }))
