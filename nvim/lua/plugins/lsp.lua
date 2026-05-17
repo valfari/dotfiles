@@ -132,11 +132,11 @@ return {
 
           vim.opt_local.omnifunc = 'v:lua.vim.lsp.omnifunc'
           local bufopts = { buffer = 0 }
-          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, vim.tbl_extend('force', bufopts, { desc = 'Goto Definition' }))
-          vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, vim.tbl_extend('force', bufopts, { desc = 'Goto Declaration' }))
-          vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, vim.tbl_extend('force', bufopts, { desc = 'Goto Type Definition' }))
-          vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, vim.tbl_extend('force', bufopts, { desc = 'Goto Implementation' }))
-          vim.keymap.set('n', 'gr', function()
+          vim.keymap.set('n', '<leader>md', vim.lsp.buf.definition, vim.tbl_extend('force', bufopts, { desc = '[M]ove to [D]efinition' }))
+          vim.keymap.set('n', '<leader>mD', vim.lsp.buf.declaration, vim.tbl_extend('force', bufopts, { desc = '[M]ove to [D]eclaration' }))
+          vim.keymap.set('n', '<leader>mt', vim.lsp.buf.type_definition, vim.tbl_extend('force', bufopts, { desc = '[M]ove to [T]ype' }))
+          vim.keymap.set('n', '<leader>mi', vim.lsp.buf.implementation, vim.tbl_extend('force', bufopts, { desc = '[M]ove to [I]mplementation' }))
+          vim.keymap.set('n', '<leader>sr', function()
             vim.lsp.buf.references(nil, {
               on_list = function(options)
                 vim.fn.setqflist({}, ' ', options)
@@ -152,12 +152,8 @@ return {
                 })
               end,
             })
-          end, vim.tbl_extend('force', bufopts, { desc = 'Goto References' }))
+          end, vim.tbl_extend('force', bufopts, { desc = '[S]how [R]eferences' }))
           vim.keymap.set('n', '<leader>rnn', vim.lsp.buf.rename, vim.tbl_extend('force', bufopts, { desc = 'Rename' }))
-          vim.keymap.set('n', 'gp', function()
-            vim.cmd 'split'
-            vim.lsp.buf.definition()
-          end, vim.tbl_extend('force', bufopts, { desc = 'Peek Definition (split)' }))
           vim.keymap.set('n', '[d', function()
             vim.diagnostic.jump { count = -1, float = true }
           end, vim.tbl_extend('force', bufopts, { desc = 'Prev Diagnostic' }))

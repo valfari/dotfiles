@@ -48,8 +48,6 @@ return {
           layout = { preset = 'default' },
         },
       }
-      -- Example keymap: Bind to 'gf' in normal/visual mode to preview code actions
-      vim.keymap.set({ 'n', 'v' }, 'gf', ap.code_actions)
     end,
   },
   {

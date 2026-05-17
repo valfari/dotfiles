@@ -32,25 +32,11 @@ return {
           gs.nav_hunk 'prev'
         end, 'Prev hunk')
 
-        -- Hunk operations
-        map('n', '<leader>gs', gs.stage_hunk, 'Stage hunk')
-        map('n', '<leader>gr', gs.reset_hunk, 'Reset hunk')
-        map('v', '<leader>gs', function()
-          gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
-        end, 'Stage hunk')
-        map('v', '<leader>gr', function()
-          gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
-        end, 'Reset hunk')
-        map('n', '<leader>gS', gs.stage_buffer, 'Stage buffer')
-        map('n', '<leader>gR', gs.reset_buffer, 'Reset buffer')
-        map('n', '<leader>gu', gs.undo_stage_hunk, 'Undo stage hunk')
-
-        -- Preview & blame
-        map('n', '<leader>gp', gs.preview_hunk_inline, 'Preview hunk inline')
-        map('n', '<leader>gP', gs.preview_hunk, 'Preview hunk (float)')
-        map('n', '<leader>gB', function()
+        -- Show blame
+        map('n', '<leader>sb', function()
           gs.blame_line { full = true }
-        end, 'Blame line')
+        end, '[S]how [B]lame')
+
         local _blame_on = false
         map('n', '<leader>tg', function()
           gs.toggle_current_line_blame()
@@ -65,13 +51,15 @@ return {
           vim.notify('Word diff: ' .. (_word_diff_on and 'on' or 'off'))
         end, '[D]iff word-level')
 
-        -- Diff this buffer
-        map('n', '<leader>gd', gs.diffthis, 'Diff buffer vs index')
-        map('n', '<leader>gD', function()
-          gs.diffthis '~'
-        end, 'Diff buffer vs last commit')
-        -- Quickfix
-        map('n', '<leader>gq', gs.setqflist, 'Hunks to quickfix')
+        -- Diff buffer with input
+        map('n', '<leader>db', function()
+          local ref = vim.fn.input 'Diff vs (empty = index): '
+          if ref == '' then
+            gs.diffthis()
+          else
+            gs.diffthis(ref)
+          end
+        end, '[D]iff [B]uffer')
 
         -- Text object
         map({ 'o', 'x' }, 'ih', gs.select_hunk, 'Select hunk')
@@ -119,18 +107,6 @@ return {
     keys = {
       { '<leader>dd', '<cmd>DiffviewOpen<cr>', desc = '[D]iff [D]iffview (working tree)' },
       { '<leader>dh', '<cmd>DiffviewFileHistory<cr>', desc = '[D]iff [H]istory' },
-      {
-        '<leader>db',
-        function()
-          local branch = vim.fn.input 'Branch to diff: '
-          if branch == '' then
-            vim.notify('No branch given', vim.log.levels.WARN)
-            return
-          end
-          vim.cmd('DiffviewOpen ' .. branch)
-        end,
-        desc = '[D]iff vs [B]ranch',
-      },
       { '<leader>dq', '<cmd>DiffviewClose<cr>', desc = '[D]iff [Q]uit' },
     },
   },

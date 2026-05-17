@@ -15,6 +15,7 @@ return {
         { '<leader>r', group = 'Replace' },
         { '<leader>f', group = 'Find' },
         { '<leader>m', group = 'Move' },
+        { '<leader>s', group = 'Show' },
       },
     },
     keys = {
