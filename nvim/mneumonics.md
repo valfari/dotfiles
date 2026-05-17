@@ -1,46 +1,146 @@
-# mneu1nics
+# Mnemonics
 
+`<leader>` = `<Space>`
 
-## Launch
+---
 
-These are the things that you can launch, ie switch focus from current window to whatever els e
-Things to launch:
+## Toggle (`<leader>t*`)
 
-- <leader>lg
-Launch lazygit
+State-flipping keys. Each prints the new state on toggle.
 
-- <leader>
+| Key | Action |
+|-----|--------|
+| `<leader>tu` | UI theme (cycles through theme list) |
+| `<leader>tc` | Comment type (line ↔ block; acts as operator, needs motion) |
+| `<leader>tg` | Git blame (inline current-line blame via gitsigns) |
+| `<leader>td` | Diff word-level (gitsigns word diff) |
+| `<leader>ts` | Spell check |
+| `<leader>tv` | Virtual lines (diagnostic display: virtual text ↔ virtual lines) |
 
-## Toggle
+---
 
-These are the things that you toggle, where pressing the same key changes the state of the editor
-Things to toggle:
+## Yank (`<leader>y*`)
 
-- <leader>tu
-UI theme (cycles through theme list)
+| Key | Action |
+|-----|--------|
+| `<leader>yp` | [Y]ank [P]ath (full path of current file) |
+| `<leader>yf` | [Y]ank [F]ilename (basename only) |
+| `<leader>ya` | [Y]ank [A]ll (whole buffer contents) |
 
-- <leader>tc
-Comment type (cycles line ↔ block; acts as operator, needs motion)
+Also works in oil.nvim (yanks the entry under cursor).
 
-- <leader>tg
-Git blame (inline current-line blame)
+---
 
-- <leader>td
-Diff word-level (gitsigns word diff)
+## Diff (`<leader>d*`)
 
-- <leader>ts
-Spell check
+| Key | Action |
+|-----|--------|
+| `<leader>dc` | [D]iff vs [C]lipboard (opens split diff against `+` register) |
+| `<leader>dt` | [D]iff algorithm [T]oggle (cycles myers → patience → histogram) |
+| `<leader>dd` | [D]iffview open (working tree vs index) |
+| `<leader>dh` | [D]iff file [H]istory (DiffviewFileHistory) |
+| `<leader>dq` | [D]iff [Q]uit (close DiffviewOpen) |
+| `<leader>db` | [D]iff [B]uffer vs ref (prompts for git ref; empty = vs index) |
 
-- <leader>tv
-Virtual lines (diagnostic display: virtual text ↔ virtual lines)
+---
 
+## Replace (`<leader>r*`)
 
+grug-far (find & replace) + LSP rename.
 
-## Do
+| Key | Action |
+|-----|--------|
+| `<leader>rr` | [R]eplace (open grug-far; visual mode = prefill selection) |
+| `<leader>rw` | [R]eplace [W]ord under cursor |
+| `<leader>rf` | [R]eplace in [F]ile |
+| `<leader>rd` | [R]eplace in [D]irectory (current oil dir or file's dir) |
+| `<leader>rb` | [R]eplace in [B]uffers (all listed buffers) |
+| `<leader>rl` | [R]ename [L]SP symbol |
 
-These are the various tasks that dont' fit 'toggle' or 'launch'
+---
 
-- <leader>dr
-Do a rename
+## Find (`<leader>f*`)
 
+fff.nvim (frecency-ranked fuzzy finder).
 
+| Key | Action |
+|-----|--------|
+| `<leader>fd` | [F]ind in [D]ir (current oil dir, or cwd) |
+| `<leader>fD` | [F]ind in all [D]irs (global file search) |
+| `<leader>ff` | [F]ind (live grep) |
+| `<leader>fs` | [F]ind [S]election (grep visual selection) |
+
+---
+
+## Move (`<leader>m*`)
+
+LSP navigation + project root.
+
+| Key | Action |
+|-----|--------|
+| `<leader>md` | [M]ove to [D]efinition |
+| `<leader>mD` | [M]ove to [D]eclaration |
+| `<leader>mt` | [M]ove to [T]ype definition |
+| `<leader>mi` | [M]ove to [I]mplementation |
+| `<leader>mp` | [M]ove to [P]roject root (opens oil at root) |
+
+---
+
+## Show (`<leader>s*`)
+
+LSP info + git blame.
+
+| Key | Action |
+|-----|--------|
+| `<leader>sb` | [S]how [B]lame (full blame for current line) |
+| `<leader>sr` | [S]how [R]eferences (LSP refs → quickfix with live preview) |
+| `<leader>ss` | [S]how [S]ymbols (LSP document symbols) |
+| `<leader>sa` | [S]how [A]ctions (LSP code actions; n + v) |
+
+---
+
+## Other leader keys
+
+| Key | Action |
+|-----|--------|
+| `<leader>u` | Toggle Undotree |
+| `<leader>dc` | Diff vs clipboard (see Diff section) |
+| `<leader>el` | [E]xecute [L]ua (visual selection) |
+| `<leader>?` | which-key: show buffer-local keymaps |
+
+---
+
+## Non-leader keys
+
+| Key | Action |
+|-----|--------|
+| `s` / `S` | Flash jump / Flash treesitter select |
+| `-` | Open oil.nvim (parent directory) |
+| `;` | Arrow bookmarks |
+| `m` | Arrow buffer-local marks |
+| `K` | LSP hover documentation |
+| `<C-k>` (insert) | LSP signature help |
+| `[d` / `]d` | Diagnostic prev / next |
+| `[g` / `]g` | Git hunk prev / next |
+| `ih` | Select hunk (text object, o/x modes) |
+| `<A-,>` / `<A-.>` | barbar: prev / next buffer |
+| `<A-1..9>` | barbar: go to buffer N |
+| `<A-0>` | barbar: go to last buffer |
+| `<A-p>` / `<A-c>` | barbar: pin / close buffer |
+| `<A-h/j/k/l>` | Resize window |
+| `<A-Up/Down>` | Move line / selection up / down |
+| `<C-h/j/k/l>` | Move focus between windows |
+
+---
+
+## Built-in Vim operators (no plugin)
+
+| Key | Action |
+|-----|--------|
+| `gc` / `gb` | Comment line / block (operator, Neovim 0.10+) |
+| `gu` / `gU` | Lowercase / uppercase (operator) |
+| `gw` | Reformat text (operator) |
+| `gf` | Go to file under cursor |
+| `]s` / `[s` | Next / prev misspelled word |
+| `z=` | Spell suggestions |
+| `zg` / `zw` | Add word to good / wrong list |

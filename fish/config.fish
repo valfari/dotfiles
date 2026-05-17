@@ -2,6 +2,8 @@ set -g fish_greeting ""
 
 set -gx EDITOR nvim
 set -gx MANPAGER 'nvim +Man!'
+set -gx STARSHIP_CONFIG ~/Code/installs/dotfiles/starship/starship.toml
+set -gx ATUIN_CONFIG_DIR ~/Code/installs/dotfiles/atuin
 
 # Homebrew
 fish_add_path /opt/homebrew/bin
@@ -45,3 +47,9 @@ function __wezterm_osc7 --on-variable PWD
         printf "\e]7;file://%s%s\a" (hostname) (pwd | string escape --style url)
     end
 end
+
+# Starship prompt
+starship init fish | source
+
+# Atuin (shell history — replaces Ctrl+R)
+atuin init fish | source

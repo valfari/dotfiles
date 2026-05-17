@@ -158,7 +158,18 @@ return {
         desc = '[F]ind in [D]ir',
       },
       { '<leader>fD', function() require('fff').find_files() end, desc = '[F]ind in all [D]irs' },
-      { '<leader>ff', function() require('fff').live_grep() end, desc = '[F]ind' },
+      { '<leader>fo', function() require('fff').open_file_under_cursor() end, desc = '[F]ind file under cursor' },
+      { '<leader>ecf', function() require('fff').clear_cache('all') end, desc = '[E]xecute [C]lear [F]ff cache' },
+      { '<leader>fF', function() require('fff').live_grep() end, desc = '[F]ind (cwd)' },
+      {
+        '<leader>ff',
+        function()
+          local ok, oil = pcall(require, 'oil')
+          local dir = ok and oil.get_current_dir()
+          require('fff').live_grep(dir and { cwd = dir } or nil)
+        end,
+        desc = '[F]ind',
+      },
       {
         '<leader>fs',
         mode = { 'x' },

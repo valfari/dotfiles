@@ -4,6 +4,16 @@
 	whitespace = trailing-space,space-before-tab
 	fsmonitor = true
 	untrackedCache = true
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	dark = true
+	side-by-side = true
+	line-numbers = true
 
 [init]
 	defaultBranch = main

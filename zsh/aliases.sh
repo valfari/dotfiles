@@ -86,3 +86,9 @@ return 1
 fi
 git branch -D "$1"
 }
+
+# eza
+alias ls='eza'
+alias ll='eza -l --git'
+alias la='eza -la --git'
+alias tree='eza --tree'
