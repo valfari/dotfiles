@@ -53,3 +53,6 @@ starship init fish | source
 
 # Atuin (shell history — replaces Ctrl+R)
 atuin init fish | source
+
+# Alt+E: edit current command line in nvim, execute on :wq
+bind \ee edit_command_buffer

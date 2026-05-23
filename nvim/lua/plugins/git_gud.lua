@@ -17,6 +17,7 @@ return {
         { '<leader>m', group = 'Move' },
         { '<leader>s', group = 'Show' },
         { '<leader>e', group = 'Execute' },
+        { '<leader>h', group = 'Handle' },
       },
     },
     keys = {

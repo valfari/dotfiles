@@ -40,6 +40,10 @@ return {
       -- routes build status through window/showMessage → fidget.nvim picks it up
       metals_config.init_options = { statusBarProvider = 'on' }
 
+      metals_config.on_attach = function(_, bufnr)
+        require('lsp_keymaps').setup(bufnr)
+      end
+
       metals_config.settings = {
         showUnusedImports = true,
         showInferredType = true,

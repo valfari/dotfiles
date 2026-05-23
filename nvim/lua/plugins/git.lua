@@ -105,7 +105,18 @@ return {
       vim.api.nvim_create_autocmd('ColorScheme', { callback = set_hl })
     end,
     keys = {
-      { '<leader>dd', '<cmd>DiffviewOpen<cr>', desc = '[D]iff [D]iffview (working tree)' },
+      {
+        '<leader>dd',
+        function()
+          local ref = vim.fn.input 'Diff vs (empty = working tree): '
+          if ref == '' then
+            vim.cmd 'DiffviewOpen'
+          else
+            vim.cmd('DiffviewOpen ' .. ref)
+          end
+        end,
+        desc = '[D]iff [D]iffview',
+      },
       { '<leader>dh', '<cmd>DiffviewFileHistory<cr>', desc = '[D]iff [H]istory' },
       { '<leader>dq', '<cmd>DiffviewClose<cr>', desc = '[D]iff [Q]uit' },
     },

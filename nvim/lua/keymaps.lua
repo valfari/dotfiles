@@ -170,6 +170,46 @@ vim.keymap.set('n', '<leader>dt', function()
   return 'g@l'
 end, { expr = true, desc = '[D]iff algorithm [T]oggle' })
 
+-- HANDLE DATAPROC
+vim.keymap.set('n', '<leader>hdp', function()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local raw = table.concat(lines, '\n')
+
+  local ok, outer = pcall(vim.json.decode, raw)
+  if not ok or type(outer) ~= 'table' or type(outer.message) ~= 'string' then
+    vim.notify('hdp: could not parse buffer as log JSON', vim.log.levels.ERROR)
+    return
+  end
+
+  local msg = outer.message
+  local req_start = msg:find('request=', 1, true)
+  if not req_start then
+    vim.notify('hdp: no request= found in message', vim.log.levels.ERROR)
+    return
+  end
+  local json_str = msg:sub(req_start + #'request=')
+
+  local resp_start = json_str:find(' ; response=', 1, true)
+  if resp_start then
+    json_str = json_str:sub(1, resp_start - 1)
+  end
+
+  local ok2, payload = pcall(vim.json.decode, json_str)
+  if not ok2 or type(payload) ~= 'table' then
+    vim.notify('hdp: could not parse request JSON', vim.log.levels.ERROR)
+    return
+  end
+
+  payload.tags = nil
+
+  local compact = vim.json.encode(payload)
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, { compact })
+  vim.bo.filetype = 'json'
+
+  require('conform').format { async = false, timeout_ms = 2000 }
+  vim.notify 'hdp: dataproc payload extracted'
+end, { desc = '[H]andle [D]ata[P]roc payload' })
+
 -- MOVE TO PROJECT ROOT
 vim.keymap.set('n', '<leader>mp', function()
   local root = vim.fs.root(0, { '.git', 'Cargo.toml', 'pyproject.toml', 'package.json', 'go.mod' })
