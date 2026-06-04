@@ -39,6 +39,7 @@ target/
 *.ear
 .gradle/
 build/
+*.semanticdb
 
 # env / secrets
 .env

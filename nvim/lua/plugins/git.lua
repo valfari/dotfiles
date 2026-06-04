@@ -37,11 +37,22 @@ return {
           gs.blame_line { full = true }
         end, '[S]how [B]lame')
 
-        local _blame_on = false
         map('n', '<leader>tg', function()
-          gs.toggle_current_line_blame()
-          _blame_on = not _blame_on
-          vim.notify('Git blame: ' .. (_blame_on and 'on' or 'off'))
+          local blame_win = nil
+          for _, win in ipairs(vim.api.nvim_list_wins()) do
+            local buf = vim.api.nvim_win_get_buf(win)
+            if vim.bo[buf].filetype == 'gitsigns-blame' then
+              blame_win = win
+              break
+            end
+          end
+          if blame_win then
+            vim.api.nvim_win_close(blame_win, false)
+            vim.notify('Git blame: off')
+          else
+            gs.blame()
+            vim.notify('Git blame: on')
+          end
         end, '[G]it blame')
 
         local _word_diff_on = false
@@ -50,6 +61,16 @@ return {
           _word_diff_on = not _word_diff_on
           vim.notify('Word diff: ' .. (_word_diff_on and 'on' or 'off'))
         end, '[D]iff word-level')
+
+        -- Stage / reset hunks
+        map({ 'n', 'x' }, '<leader>ds', function()
+          gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, '[D]iff [S]tage hunk')
+        map('n', '<leader>dS', gs.stage_buffer, '[D]iff [S]tage buffer')
+        map({ 'n', 'x' }, '<leader>dR', function()
+          gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, '[D]iff [R]eset hunk')
+        map('n', '<leader>du', gs.undo_stage_hunk, '[D]iff [U]ndo stage')
 
         -- Diff buffer with input
         map('n', '<leader>db', function()

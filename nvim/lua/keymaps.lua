@@ -171,7 +171,7 @@ vim.keymap.set('n', '<leader>dt', function()
 end, { expr = true, desc = '[D]iff algorithm [T]oggle' })
 
 -- HANDLE DATAPROC
-vim.keymap.set('n', '<leader>hdp', function()
+vim.keymap.set('n', '<leader>hp', function()
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local raw = table.concat(lines, '\n')
 
@@ -209,6 +209,84 @@ vim.keymap.set('n', '<leader>hdp', function()
   require('conform').format { async = false, timeout_ms = 2000 }
   vim.notify 'hdp: dataproc payload extracted'
 end, { desc = '[H]andle [D]ata[P]roc payload' })
+
+-- HANDLE JAR
+vim.keymap.set('n', '<leader>hj', function()
+  local jar_url = vim.trim(vim.fn.getreg '+')
+  if jar_url == '' then
+    vim.notify('hj: clipboard is empty', vim.log.levels.ERROR)
+    return
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local replaced = false
+  for i, line in ipairs(lines) do
+    if line:find('"main_application_file"', 1, true) then
+      local indent = line:match '^(%s*)'
+      local trailing_comma = line:match ',$' and ',' or ''
+      lines[i] = indent .. '"main_application_file": "' .. jar_url .. '"' .. trailing_comma
+      replaced = true
+      break
+    end
+  end
+
+  if not replaced then
+    vim.notify('hj: main_application_file not found in buffer', vim.log.levels.ERROR)
+    return
+  end
+
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+  vim.notify 'hj: main_application_file updated'
+end, { desc = '[H]andle [J]ar url' })
+
+-- HANDLE JAR (BULK)
+vim.keymap.set('n', '<leader>hJ', function()
+  if vim.bo.filetype ~= 'oil' then
+    vim.notify('hJ: must be run from an oil buffer', vim.log.levels.ERROR)
+    return
+  end
+
+  local jar_url = vim.trim(vim.fn.getreg '+')
+  if jar_url == '' then
+    vim.notify('hJ: clipboard is empty', vim.log.levels.ERROR)
+    return
+  end
+
+  local dir = require('oil').get_current_dir()
+  if not dir then
+    vim.notify('hJ: could not get current directory', vim.log.levels.ERROR)
+    return
+  end
+
+  local json_files = vim.fn.glob(dir .. '*.json', false, true)
+  if #json_files == 0 then
+    vim.notify('hJ: no JSON files in ' .. dir, vim.log.levels.WARN)
+    return
+  end
+
+  local updated, skipped = 0, 0
+  for _, path in ipairs(json_files) do
+    local lines = vim.fn.readfile(path)
+    local replaced = false
+    for i, line in ipairs(lines) do
+      if line:find('"main_application_file"', 1, true) then
+        local indent = line:match '^(%s*)'
+        local trailing_comma = line:match ',$' and ',' or ''
+        lines[i] = indent .. '"main_application_file": "' .. jar_url .. '"' .. trailing_comma
+        replaced = true
+        break
+      end
+    end
+    if replaced then
+      vim.fn.writefile(lines, path)
+      updated = updated + 1
+    else
+      skipped = skipped + 1
+    end
+  end
+
+  vim.notify(string.format('hJ: updated %d, skipped %d', updated, skipped))
+end, { desc = '[H]andle [J]ar url (bulk)' })
 
 -- MOVE TO PROJECT ROOT
 vim.keymap.set('n', '<leader>mp', function()
