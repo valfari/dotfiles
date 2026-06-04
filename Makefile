@@ -38,7 +38,9 @@ nushell:
 
 fish:
 	@mkdir -p $(CONFIG)/fish/conf.d
-	ln -sfn $(DOTFILES)/fish/functions  $(CONFIG)/fish/functions
+	ln -sfn $(DOTFILES)/fish/functions   $(CONFIG)/fish/functions
+	rm -rf  $(CONFIG)/fish/completions
+	ln -sfn $(DOTFILES)/fish/completions $(CONFIG)/fish/completions
 	ln -sf  $(DOTFILES)/fish/config.fish $(CONFIG)/fish/config.fish
 	ln -sf  $(DOTFILES)/fish/conf.d/aliases.fish $(CONFIG)/fish/conf.d/aliases.fish
 	@echo "  fish"
@@ -69,6 +71,7 @@ uninstall:
 	rm -f  $(CONFIG)/scooter
 	rm -f  $(CONFIG)/nushell
 	rm -f  $(CONFIG)/fish/functions
+	rm -f  $(CONFIG)/fish/completions
 	rm -f  $(CONFIG)/fish/config.fish
 	rm -f  $(CONFIG)/fish/conf.d/aliases.fish
 	rm -f  $(CONFIG)/git/config
