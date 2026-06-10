@@ -1,3 +1,13 @@
+_G._git_ref_complete = function(arglead)
+  local refs = vim.fn.systemlist 'git branch --all --format="%(refname:short)" 2>/dev/null && git tag 2>/dev/null'
+  if arglead == '' then
+    return refs
+  end
+  return vim.tbl_filter(function(r)
+    return r:find(arglead, 1, true) ~= nil
+  end, refs)
+end
+
 return {
   {
     'lewis6991/gitsigns.nvim',
@@ -50,6 +60,15 @@ return {
             vim.api.nvim_win_close(blame_win, false)
             vim.notify('Git blame: off')
           else
+            local origin = vim.api.nvim_get_current_win()
+            vim.api.nvim_create_autocmd('WinEnter', {
+              once = true,
+              callback = function()
+                if vim.bo[vim.api.nvim_win_get_buf(0)].filetype == 'gitsigns-blame' then
+                  vim.api.nvim_set_current_win(origin)
+                end
+              end,
+            })
             gs.blame()
             vim.notify('Git blame: on')
           end
@@ -74,7 +93,7 @@ return {
 
         -- Diff buffer with input
         map('n', '<leader>db', function()
-          local ref = vim.fn.input 'Diff vs (empty = index): '
+          local ref = vim.fn.input { prompt = 'Diff vs (empty = index): ', completion = 'customlist,v:lua._git_ref_complete' }
           if ref == '' then
             gs.diffthis()
           else
@@ -107,6 +126,73 @@ return {
           width = 30,
         },
       },
+      show_untracked = true,
+      keymaps = {
+        file_panel = {
+          {
+            { 'n', 'x' },
+            'X',
+            function()
+              local lib = require 'diffview.lib'
+              local vcs_utils = require 'diffview.vcs.utils'
+              local view = lib.get_current_view()
+              if not view then return end
+              local panel = view.panel
+
+              local start_line = vim.fn.line '.'
+              local end_line = start_line
+              local mode = vim.fn.mode()
+              if mode == 'V' or mode == 'v' then
+                start_line = vim.fn.line 'v'
+                end_line = vim.fn.line '.'
+                if start_line > end_line then
+                  start_line, end_line = end_line, start_line
+                end
+              end
+
+              local seen = {}
+              local entries = {}
+              panel.components.comp:deep_some(function(comp)
+                local line = comp.lstart + 1
+                if comp:isleaf() and line >= start_line and line <= end_line then
+                  local file_entries = {}
+                  if comp.name == 'file' then
+                    file_entries = { comp.context }
+                  elseif comp.name == 'dir_name' then
+                    local node = comp.parent and comp.parent.context and comp.parent.context._node
+                    if node then
+                      for _, leaf in ipairs(node:leaves()) do
+                        if leaf.data then
+                          file_entries[#file_entries + 1] = leaf.data
+                        end
+                      end
+                    end
+                  end
+                  for _, fe in ipairs(file_entries) do
+                    if not seen[fe.path] then
+                      seen[fe.path] = true
+                      entries[#entries + 1] = fe
+                    end
+                  end
+                end
+                return false
+              end)
+
+              if #entries == 0 then return end
+
+              local label = #entries == 1 and entries[1].path or (#entries .. ' entries')
+              local ok = vim.fn.confirm('Restore ' .. label .. ' from ref? (overwrites local)', '&Yes\n&No', 2)
+              if ok ~= 1 then return end
+
+              for _, fe in ipairs(entries) do
+                vcs_utils.restore_file(view.adapter, fe.path, fe.kind, nil)
+              end
+              view:update_files()
+            end,
+            { desc = 'Restore entry/entries from ref (overwrite local)' },
+          },
+        },
+      },
     },
     config = function(_, opts)
       require('diffview').setup(opts)
@@ -129,7 +215,7 @@ return {
       {
         '<leader>dd',
         function()
-          local ref = vim.fn.input 'Diff vs (empty = working tree): '
+          local ref = vim.fn.input { prompt = 'Diff vs (empty = working tree): ', completion = 'customlist,v:lua._git_ref_complete' }
           if ref == '' then
             vim.cmd 'DiffviewOpen'
           else
@@ -138,7 +224,8 @@ return {
         end,
         desc = '[D]iff [D]iffview',
       },
-      { '<leader>dh', '<cmd>DiffviewFileHistory<cr>', desc = '[D]iff [H]istory' },
+      { '<leader>dh', '<cmd>DiffviewFileHistory %<cr>', desc = '[D]iff [H]istory (buffer)' },
+      { '<leader>dH', '<cmd>DiffviewFileHistory<cr>', desc = '[D]iff [H]istory (all)' },
       { '<leader>dq', '<cmd>DiffviewClose<cr>', desc = '[D]iff [Q]uit' },
     },
   },
