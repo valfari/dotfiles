@@ -100,8 +100,8 @@ return {
         char = {
           enabled = true,
           search = { wrap = true },
-          highlight = { backdrop = true },
-          jump = { register = true },
+          highlight = { backdrop = false },
+          jump = { register = false },
         },
       },
       jump = {
