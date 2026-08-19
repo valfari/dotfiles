@@ -47,6 +47,12 @@ return {
           gs.blame_line { full = true }
         end, '[S]how [B]lame')
 
+        map('n', '<leader>sg', function()
+          local branch = vim.fn.systemlist 'git rev-parse --abbrev-ref HEAD 2>/dev/null'
+          local result = (branch and branch[1] and branch[1] ~= '') and branch[1] or nil
+          vim.notify('Branch: ' .. (result or 'null'))
+        end, '[S]how [G]it branch')
+
         map('n', '<leader>tg', function()
           local blame_win = nil
           for _, win in ipairs(vim.api.nvim_list_wins()) do
