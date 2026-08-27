@@ -18,14 +18,65 @@ return {
     end,
   },
   {
+    -- inline image output; disable if images don't render correctly over wezterm's kitty protocol
+    '3rd/image.nvim',
+    opts = {
+      backend = 'kitty',
+      processor = 'magick_cli',
+    },
+  },
+  {
     'benlubas/molten-nvim',
-    enabled = false,
     version = '^1.0.0', -- use version <2.0.0 to avoid breaking changes
     build = ':UpdateRemotePlugins',
+    dependencies = { '3rd/image.nvim' },
+    ft = { 'python', 'markdown', 'quarto' },
     init = function()
-      -- this is an example, not a default. Please see the readme for more configuration options
+      vim.g.molten_image_provider = 'image.nvim'
+      vim.g.molten_auto_open_output = false
+      vim.g.molten_wrap_output = true
+      vim.g.molten_virt_text_output = true
       vim.g.molten_output_win_max_height = 12
     end,
+    keys = {
+      { '<leader>ji', ':MoltenInit<CR>', desc = 'Jupyter: init kernel' },
+      { '<leader>je', ':MoltenEvaluateOperator<CR>', desc = 'Jupyter: evaluate operator' },
+      { '<leader>jr', ':MoltenReevaluateCell<CR>', desc = 'Jupyter: re-evaluate cell' },
+      { '<leader>jl', ':MoltenEvaluateLine<CR>', desc = 'Jupyter: evaluate line' },
+      { '<leader>je', ':<C-u>MoltenEvaluateVisual<CR>gv', mode = 'v', desc = 'Jupyter: evaluate selection' },
+      { '<leader>jo', ':MoltenShowOutput<CR>', desc = 'Jupyter: show output' },
+      { '<leader>jd', ':MoltenDelete<CR>', desc = 'Jupyter: delete cell output' },
+    },
+  },
+  {
+    -- fork of GCBallesteros/jupytext.nvim, which is unmaintained (last commit 2024-04);
+    -- this fork carries ongoing fixes (buffer-write hooks, duplicate-open handling)
+    '5ayam5/jupytext.nvim',
+    opts = {
+      style = 'markdown',
+      output_extension = 'md',
+      force_ft = 'markdown',
+    },
+  },
+  {
+    'quarto-dev/quarto-nvim',
+    ft = { 'markdown', 'quarto' },
+    dependencies = { 'jmbuhr/otter.nvim' },
+    opts = {
+      lspFeatures = {
+        languages = { 'python' },
+        -- 'curly' (quarto-nvim's default) only matches ```{python} chunks; jupytext emits plain
+        -- ```python fences, so this must be anything else to fall back to the standard treesitter
+        -- markdown injections query
+        chunks = 'all',
+        diagnostics = { enabled = true, triggers = { 'BufWritePost' } },
+        completion = { enabled = true },
+      },
+      codeRunner = {
+        enabled = true,
+        default_method = 'molten',
+      },
+    },
   },
   {
     'scalameta/nvim-metals',

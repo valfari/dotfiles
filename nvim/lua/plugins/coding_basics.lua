@@ -79,6 +79,11 @@ return {
       local aliases = { ex = 'elixir', pl = 'perl', sh = 'bash', ts = 'typescript' }
       vim.treesitter.query.add_directive('set-lang-from-info-string!', function(match, _, bufnr, pred, metadata)
         local node = match[pred[2]]
+        -- iter_matches now always passes captures as arrays regardless of the `all` option,
+        -- so a bare `@_lang` capture arrives as `{ node }` rather than `node`
+        if type(node) == 'table' then
+          node = node[1]
+        end
         if not node then return end
         local ok, text = pcall(vim.treesitter.get_node_text, node, bufnr)
         if not ok or not text then return end

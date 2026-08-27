@@ -3,7 +3,9 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.o.number = true
-vim.g.python3_host_prog = '/Users/vustimenko/Code/installs/venvs/.venv/bin/python.3.14'
+vim.g.python3_host_prog = '/Users/vustimenko/Code/installs/venvs/.venv/bin/python3.14'
+-- so CLI tools installed into this venv (jupytext, etc.) resolve for vim.fn.system()/jobstart()
+vim.env.PATH = '/Users/vustimenko/Code/installs/venvs/.venv/bin:' .. vim.env.PATH
 
 vim.o.relativenumber = true
 vim.opt.termguicolors = true

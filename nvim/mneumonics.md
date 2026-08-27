@@ -99,6 +99,21 @@ LSP info + git blame.
 
 ---
 
+## Jupyter (`<leader>j*`)
+
+molten-nvim kernel execution for `.ipynb` notebooks (opened via jupytext as markdown; code cells get LSP via quarto-nvim/otter.nvim).
+
+| Key | Action |
+|-----|--------|
+| `<leader>ji` | [J]upyter [I]nit (start kernel for current buffer) |
+| `<leader>je` | [J]upyter [E]valuate operator (normal mode) / selection (visual mode) |
+| `<leader>jl` | [J]upyter evaluate [L]ine |
+| `<leader>jr` | [J]upyter [R]e-evaluate current cell |
+| `<leader>jo` | [J]upyter show [O]utput |
+| `<leader>jd` | [J]upyter [D]elete cell output |
+
+---
+
 ## Other leader keys
 
 | Key | Action |
