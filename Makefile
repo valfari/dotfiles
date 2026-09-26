@@ -3,7 +3,7 @@ CONFIG   := $(HOME)/.config
 
 .DEFAULT_GOAL := help
 
-.PHONY: help install uninstall nvim fish nushell wezterm git bottom htop scooter
+.PHONY: help install uninstall nvim fish nushell wezterm git bottom htop scooter atuin starship eza
 
 help:
 	@echo "Usage: make <target>"
@@ -11,9 +11,9 @@ help:
 	@echo "  install     Symlink all configs into ~/.config"
 	@echo "  uninstall   Remove all managed symlinks"
 	@echo ""
-	@echo "  Individual: nvim fish nushell wezterm git bottom htop scooter"
+	@echo "  Individual: nvim fish nushell wezterm git bottom htop scooter atuin starship eza"
 
-install: nvim fish nushell wezterm git bottom htop scooter
+install: nvim fish nushell wezterm git bottom htop scooter atuin starship eza
 
 # --- whole-directory symlinks ---
 
@@ -32,6 +32,14 @@ scooter:
 nushell:
 	ln -sfn $(DOTFILES)/nushell $(CONFIG)/nushell
 	@echo "  nushell"
+
+atuin:
+	ln -sfn $(DOTFILES)/atuin $(CONFIG)/atuin
+	@echo "  atuin"
+
+eza:
+	ln -sfn $(DOTFILES)/eza $(CONFIG)/eza
+	@echo "  eza"
 
 # --- fish: real dir managed by fish, symlink individual items ---
 # (~/.config/fish/fish_variables is written by fish itself, not ours)
@@ -63,6 +71,10 @@ htop:
 	ln -sf $(DOTFILES)/htop/htoprc $(CONFIG)/htop/htoprc
 	@echo "  htop"
 
+starship:
+	ln -sf $(DOTFILES)/starship/starship.toml $(CONFIG)/starship.toml
+	@echo "  starship"
+
 # --- uninstall ---
 
 uninstall:
@@ -70,6 +82,8 @@ uninstall:
 	rm -f  $(CONFIG)/wezterm
 	rm -f  $(CONFIG)/scooter
 	rm -f  $(CONFIG)/nushell
+	rm -f  $(CONFIG)/atuin
+	rm -f  $(CONFIG)/eza
 	rm -f  $(CONFIG)/fish/functions
 	rm -f  $(CONFIG)/fish/completions
 	rm -f  $(CONFIG)/fish/config.fish
@@ -78,4 +92,5 @@ uninstall:
 	rm -f  $(CONFIG)/git/ignore
 	rm -f  $(CONFIG)/bottom/bottom.toml
 	rm -f  $(CONFIG)/htop/htoprc
+	rm -f  $(CONFIG)/starship.toml
 	@echo "Symlinks removed"

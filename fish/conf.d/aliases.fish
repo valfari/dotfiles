@@ -1,5 +1,3 @@
-set -gx EZA_CONFIG_DIR ~/Code/installs/dotfiles/eza
-
 # Git abbreviations (expand in-place before execution)
 abbr -a gs git status
 abbr -a gpl git pull

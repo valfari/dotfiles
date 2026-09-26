@@ -2,9 +2,6 @@
 # any cross machine environment config goes here
 
 $env.EDITOR = "nvim"
-$env.EZA_CONFIG_DIR = ($env.HOME | path join "Code/installs/dotfiles/eza")
-$env.STARSHIP_CONFIG = ($env.HOME | path join "Code/installs/dotfiles/starship/starship.toml")
-$env.ATUIN_CONFIG_DIR = ($env.HOME | path join "Code/installs/dotfiles/atuin")
 
 # Homebrew
 $env.PATH = ($env.PATH | prepend "/opt/homebrew/bin")

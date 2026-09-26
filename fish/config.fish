@@ -2,8 +2,6 @@ set -g fish_greeting ""
 
 set -gx EDITOR nvim
 set -gx MANPAGER 'nvim +Man!'
-set -gx STARSHIP_CONFIG ~/Code/installs/dotfiles/starship/starship.toml
-set -gx ATUIN_CONFIG_DIR ~/Code/installs/dotfiles/atuin
 
 # Homebrew
 fish_add_path /opt/homebrew/bin
@@ -56,3 +54,11 @@ atuin init fish | source
 
 # Alt+E: edit current command line in nvim, execute on :wq
 bind \ee edit_command_buffer
+
+# >>> grok installer >>>
+fish_add_path $HOME/.grok/bin
+# <<< grok installer <<<
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "$HOME/.local/bin" $PATH
