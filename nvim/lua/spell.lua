@@ -1,21 +1,23 @@
 vim.opt.spell = false
 vim.opt.spelllang = 'en_gb'
-
--- Download spell files automatically if missing
--- vim.opt.spellfile = vim.fn.stdpath('config') .. '/spell/en.utf-8.add'  -- Custom word list file
+vim.opt.spellfile = vim.fn.stdpath('config') .. '/spell/en_gb.utf-8.add' -- Custom word list file, tracked in dotfiles
 
 vim.keymap.set('n', '<leader>ts', function()
   vim.opt.spell = not vim.opt.spell:get()
   vim.notify('Spell check: ' .. (vim.opt.spell:get() and 'enabled' or 'disabled'))
 end, { desc = '[S]pell [C]heck' })
 
--- Enable only for specific filetypes via autocmd
--- vim.api.nvim_create_autocmd('FileType', {
---   pattern = { 'markdown', 'text', 'tex', 'gitcommit' },  -- Add your filetypes here
---   callback = function()
---     vim.opt_local.spell = true
---   end,
--- })
+-- Enable only for prose filetypes
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'markdown', 'text', 'gitcommit', 'quarto' },
+  callback = function()
+    vim.opt_local.spell = true
+  end,
+})
+
+-- On-demand autocorrect: jump to the nearest misspelled word, take the top
+-- suggestion, then resume typing where you were
+vim.keymap.set('i', '<C-l>', '<c-g>u<Esc>[s1z=`]a<c-g>u', { desc = 'Fix nearest misspelled word (top suggestion)' })
 
 vim.api.nvim_set_hl(0, 'SpellBad', { undercurl = true, fg = 'Red' })
 vim.api.nvim_set_hl(0, 'SpellCap', { undercurl = true, fg = 'Yellow' })

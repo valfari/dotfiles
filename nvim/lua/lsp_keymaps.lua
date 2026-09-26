@@ -51,6 +51,18 @@ function M.setup(bufnr)
   end, vim.tbl_extend('force', bufopts, { desc = '[S]how [R]eferences (global)' }))
   vim.keymap.set('n', '<leader>rl', vim.lsp.buf.rename,           vim.tbl_extend('force', bufopts, { desc = '[R]ename [L]SP symbol' }))
   vim.keymap.set('n', '<leader>ss', vim.lsp.buf.document_symbol,  vim.tbl_extend('force', bufopts, { desc = '[S]how [S]ymbols' }))
+  vim.keymap.set('n', '<leader>sw', function()
+    vim.ui.input({ prompt = 'Workspace symbol: ' }, function(query)
+      if not query then
+        return
+      end
+      vim.lsp.buf.workspace_symbol(query, {
+        on_list = function(options)
+          show_refs(options.items)
+        end,
+      })
+    end)
+  end, vim.tbl_extend('force', bufopts, { desc = '[S]how [W]orkspace symbols' }))
   vim.keymap.set({ 'n', 'v' }, '<leader>sa', vim.lsp.buf.code_action, vim.tbl_extend('force', bufopts, { desc = '[S]how [A]ctions' }))
   vim.keymap.set('n', '[d', function()
     vim.diagnostic.jump { count = -1, float = true }

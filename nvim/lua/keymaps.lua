@@ -148,6 +148,31 @@ vim.keymap.set('n', '<leader>tu', function()
   return 'g@l'
 end, { expr = true, desc = '[UI] theme' })
 
+-- TOGGLE BUFFERS (close secondary blame/quickfix windows, return to original)
+vim.keymap.set('n', '<leader>tb', function()
+  local was_current_closed = false
+  local current = vim.api.nvim_get_current_win()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    local ft = vim.bo[buf].filetype
+    local bt = vim.bo[buf].buftype
+    if ft == 'gitsigns-blame' or ft == 'aerial' or bt == 'quickfix' or bt == 'locationlist' then
+      if win == current then
+        was_current_closed = true
+      end
+      pcall(vim.api.nvim_win_close, win, false)
+    end
+  end
+  if was_current_closed then
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+      if vim.bo[vim.api.nvim_win_get_buf(win)].buftype == '' then
+        vim.api.nvim_set_current_win(win)
+        break
+      end
+    end
+  end
+end, { desc = '[T]oggle [B]uffers (close secondary)' })
+
 vim.api.nvim_create_autocmd('VimEnter', {
   once = true,
   callback = restore_theme_for_cwd,

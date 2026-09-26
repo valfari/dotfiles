@@ -40,6 +40,9 @@ return {
     end,
     keys = {
       { '<leader>ji', ':MoltenInit<CR>', desc = 'Jupyter: init kernel' },
+      { '<leader>jcp', ':MoltenInit databricks-connect<CR>', desc = 'Jupyter: init Databricks Connect kernel (personal cluster, default)' },
+      { '<leader>jca', ':MoltenInit databricks-connect-164<CR>', desc = 'Jupyter: init Databricks Connect kernel (ADHOC-16-4, parked)' },
+      { '<leader>jch', ':MoltenInit databricks-connect-heavy<CR>', desc = 'Jupyter: init Databricks Connect kernel (heavy computation)' },
       { '<leader>je', ':MoltenEvaluateOperator<CR>', desc = 'Jupyter: evaluate operator' },
       { '<leader>jr', ':MoltenReevaluateCell<CR>', desc = 'Jupyter: re-evaluate cell' },
       { '<leader>jl', ':MoltenEvaluateLine<CR>', desc = 'Jupyter: evaluate line' },

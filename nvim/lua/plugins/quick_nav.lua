@@ -129,6 +129,19 @@ return {
   },
 
   {
+    'stevearc/aerial.nvim',
+    opts = {
+      backends = { ['markdown'] = { 'treesitter' } },
+      layout = { default_direction = 'right', width = 0.25 },
+      open_automatic = false,
+    },
+    keys = {
+      { '<leader>to', '<cmd>AerialToggle<CR>', desc = '[T]oggle [O]utline' },
+      { ']h', function() require('aerial').next() end, desc = 'Next heading' },
+      { '[h', function() require('aerial').prev() end, desc = 'Previous heading' },
+    },
+  },
+  {
     'dmtrKovalenko/fff.nvim',
     build = function()
       require('fff.download').download_or_build_binary()

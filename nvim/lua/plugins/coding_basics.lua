@@ -63,6 +63,7 @@ return {
         'json',
         'yaml',
         'toml',
+        'kotlin',
       },
       sync_install = false,
       auto_install = true,
